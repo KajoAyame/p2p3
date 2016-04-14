@@ -31,3 +31,4 @@ get_if_addrs = "~0.4.0"
 rustful = { git = "https://github.com/Ogeon/rustful.git"}
 env_logger = "*"
 serde_json = "*"
+bincode = "*"
