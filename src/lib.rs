@@ -6,7 +6,6 @@ extern crate rustc_serialize;
 extern crate docopt;
 
 mod commit;
-mod compile;
 mod logger;
 pub mod network;
 mod permission;
