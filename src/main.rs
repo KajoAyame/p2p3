@@ -90,7 +90,7 @@ pub fn main() {
 
      let mut service = unwrap_result!(Service::with_config(event_sender, &config));
      unwrap_result!(service.start_listening_tcp());
-     //unwrap_result!(service.start_listening_utp());
+     unwrap_result!(service.start_listening_utp());
      let my_id = service.id();
 
      // Enable listening and responding to peers searching for us.
