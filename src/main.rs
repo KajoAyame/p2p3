@@ -74,7 +74,7 @@ pub fn main() {
 
     match unwrap_result!(channel_receiver.recv()) {
         crust::Event::ConnectionInfoPrepared(result) => {
-            println!("prepared!");
+            //println!("prepared!");
 
             let ConnectionInfoResult {
                 result_token, result } = result;
@@ -88,10 +88,10 @@ pub fn main() {
             let data = Json::from_str(info_json.as_str()).unwrap();
             let obj = data.as_object().unwrap();
             let foo = obj.get("static_contact_info").unwrap();
-            println!("foo = \n{}", foo);
+            //println!("foo = \n{}", foo);
 
             let json_str: String = foo.to_string();
-            println!("json_str = \n{}", json_str);
+            //println!("json_str = \n{}", json_str);
 
             let mut info: StaticContactInfo = json::decode(&json_str).unwrap();
             info.tcp_acceptors.remove(0);

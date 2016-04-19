@@ -1,0 +1,392 @@
+The system is: Darwin - 14.3.0 - x86_64
+Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+Compiler: /usr/bin/cc 
+Build flags: ;-O0;-ffunction-sections;-fdata-sections;-m64;-fPIC
+Id flags: 
+
+The output was:
+0
+
+
+Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "a.out"
+
+The C compiler identification is AppleClang, found in "/Users/Signal/Documents/github/p2p3/target/debug/build/libgit2-sys-368b385e55755cd9/out/build/CMakeFiles/3.4.0/CompilerIdC/a.out"
+
+Determining if the C compiler works passed with the following output:
+Change Dir: /Users/Signal/Documents/github/p2p3/target/debug/build/libgit2-sys-368b385e55755cd9/out/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_16879/fast"
+/Library/Developer/CommandLineTools/usr/bin/make -f CMakeFiles/cmTC_16879.dir/build.make CMakeFiles/cmTC_16879.dir/build
+Building C object CMakeFiles/cmTC_16879.dir/testCCompiler.c.o
+/usr/bin/cc    -O0 -ffunction-sections -fdata-sections -m64 -fPIC    -o CMakeFiles/cmTC_16879.dir/testCCompiler.c.o   -c /Users/Signal/Documents/github/p2p3/target/debug/build/libgit2-sys-368b385e55755cd9/out/build/CMakeFiles/CMakeTmp/testCCompiler.c
+Linking C executable cmTC_16879
+/usr/local/Cellar/cmake/3.4.0/bin/cmake -E cmake_link_script CMakeFiles/cmTC_16879.dir/link.txt --verbose=1
+/usr/bin/cc   -O0 -ffunction-sections -fdata-sections -m64 -fPIC  -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTC_16879.dir/testCCompiler.c.o  -o cmTC_16879  
+
+
+Detecting C compiler ABI info compiled with the following output:
+Change Dir: /Users/Signal/Documents/github/p2p3/target/debug/build/libgit2-sys-368b385e55755cd9/out/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_eed6f/fast"
+/Library/Developer/CommandLineTools/usr/bin/make -f CMakeFiles/cmTC_eed6f.dir/build.make CMakeFiles/cmTC_eed6f.dir/build
+Building C object CMakeFiles/cmTC_eed6f.dir/CMakeCCompilerABI.c.o
+/usr/bin/cc    -O0 -ffunction-sections -fdata-sections -m64 -fPIC    -o CMakeFiles/cmTC_eed6f.dir/CMakeCCompilerABI.c.o   -c /usr/local/Cellar/cmake/3.4.0/share/cmake/Modules/CMakeCCompilerABI.c
+Linking C executable cmTC_eed6f
+/usr/local/Cellar/cmake/3.4.0/bin/cmake -E cmake_link_script CMakeFiles/cmTC_eed6f.dir/link.txt --verbose=1
+/usr/bin/cc   -O0 -ffunction-sections -fdata-sections -m64 -fPIC  -Wl,-search_paths_first -Wl,-headerpad_max_install_names  -v -Wl,-v CMakeFiles/cmTC_eed6f.dir/CMakeCCompilerABI.c.o  -o cmTC_eed6f   
+Apple LLVM version 7.0.2 (clang-700.1.81)
+Target: x86_64-apple-darwin14.3.0
+Thread model: posix
+ "/Library/Developer/CommandLineTools/usr/bin/ld" -demangle -dynamic -arch x86_64 -macosx_version_min 10.10.0 -o cmTC_eed6f -search_paths_first -headerpad_max_install_names -v CMakeFiles/cmTC_eed6f.dir/CMakeCCompilerABI.c.o -lSystem /Library/Developer/CommandLineTools/usr/bin/../lib/clang/7.0.2/lib/darwin/libclang_rt.osx.a
+@(#)PROGRAM:ld  PROJECT:ld64-253.9
+configured to support archs: armv6 armv7 armv7s arm64 i386 x86_64 x86_64h armv6m armv7k armv7m armv7em (tvOS)
+Library search paths:
+	/usr/lib
+	/usr/local/lib
+Framework search paths:
+	/Library/Frameworks/
+	/System/Library/Frameworks/
+
+
+Parsed C implicit link information from above output:
+  link line regex: [^( *|.*[/\])(ld|([^/\]+-)?ld|collect2)[^/\]*( |$)]
+  ignore line: [Change Dir: /Users/Signal/Documents/github/p2p3/target/debug/build/libgit2-sys-368b385e55755cd9/out/build/CMakeFiles/CMakeTmp]
+  ignore line: []
+  ignore line: [Run Build Command:"/usr/bin/make" "cmTC_eed6f/fast"]
+  ignore line: [/Library/Developer/CommandLineTools/usr/bin/make -f CMakeFiles/cmTC_eed6f.dir/build.make CMakeFiles/cmTC_eed6f.dir/build]
+  ignore line: [Building C object CMakeFiles/cmTC_eed6f.dir/CMakeCCompilerABI.c.o]
+  ignore line: [/usr/bin/cc    -O0 -ffunction-sections -fdata-sections -m64 -fPIC    -o CMakeFiles/cmTC_eed6f.dir/CMakeCCompilerABI.c.o   -c /usr/local/Cellar/cmake/3.4.0/share/cmake/Modules/CMakeCCompilerABI.c]
+  ignore line: [Linking C executable cmTC_eed6f]
+  ignore line: [/usr/local/Cellar/cmake/3.4.0/bin/cmake -E cmake_link_script CMakeFiles/cmTC_eed6f.dir/link.txt --verbose=1]
+  ignore line: [/usr/bin/cc   -O0 -ffunction-sections -fdata-sections -m64 -fPIC  -Wl,-search_paths_first -Wl,-headerpad_max_install_names  -v -Wl,-v CMakeFiles/cmTC_eed6f.dir/CMakeCCompilerABI.c.o  -o cmTC_eed6f   ]
+  ignore line: [Apple LLVM version 7.0.2 (clang-700.1.81)]
+  ignore line: [Target: x86_64-apple-darwin14.3.0]
+  ignore line: [Thread model: posix]
+  link line: [ "/Library/Developer/CommandLineTools/usr/bin/ld" -demangle -dynamic -arch x86_64 -macosx_version_min 10.10.0 -o cmTC_eed6f -search_paths_first -headerpad_max_install_names -v CMakeFiles/cmTC_eed6f.dir/CMakeCCompilerABI.c.o -lSystem /Library/Developer/CommandLineTools/usr/bin/../lib/clang/7.0.2/lib/darwin/libclang_rt.osx.a]
+    arg [/Library/Developer/CommandLineTools/usr/bin/ld] ==> ignore
+    arg [-demangle] ==> ignore
+    arg [-dynamic] ==> ignore
+    arg [-arch] ==> ignore
+    arg [x86_64] ==> ignore
+    arg [-macosx_version_min] ==> ignore
+    arg [10.10.0] ==> ignore
+    arg [-o] ==> ignore
+    arg [cmTC_eed6f] ==> ignore
+    arg [-search_paths_first] ==> ignore
+    arg [-headerpad_max_install_names] ==> ignore
+    arg [-v] ==> ignore
+    arg [CMakeFiles/cmTC_eed6f.dir/CMakeCCompilerABI.c.o] ==> ignore
+    arg [-lSystem] ==> lib [System]
+    arg [/Library/Developer/CommandLineTools/usr/bin/../lib/clang/7.0.2/lib/darwin/libclang_rt.osx.a] ==> lib [/Library/Developer/CommandLineTools/usr/bin/../lib/clang/7.0.2/lib/darwin/libclang_rt.osx.a]
+  Library search paths: [;/usr/lib;/usr/local/lib]
+  Framework search paths: [;/Library/Frameworks/;/System/Library/Frameworks/]
+  remove lib [System]
+  collapse lib [/Library/Developer/CommandLineTools/usr/bin/../lib/clang/7.0.2/lib/darwin/libclang_rt.osx.a] ==> [/Library/Developer/CommandLineTools/usr/lib/clang/7.0.2/lib/darwin/libclang_rt.osx.a]
+  collapse library dir [/usr/lib] ==> [/usr/lib]
+  collapse library dir [/usr/local/lib] ==> [/usr/local/lib]
+  collapse framework dir [/Library/Frameworks/] ==> [/Library/Frameworks]
+  collapse framework dir [/System/Library/Frameworks/] ==> [/System/Library/Frameworks]
+  implicit libs: [/Library/Developer/CommandLineTools/usr/lib/clang/7.0.2/lib/darwin/libclang_rt.osx.a]
+  implicit dirs: [/usr/lib;/usr/local/lib]
+  implicit fwks: [/Library/Frameworks;/System/Library/Frameworks]
+
+
+
+
+Detecting C [-std=c11] compiler features compiled with the following output:
+Change Dir: /Users/Signal/Documents/github/p2p3/target/debug/build/libgit2-sys-368b385e55755cd9/out/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_d13b2/fast"
+/Library/Developer/CommandLineTools/usr/bin/make -f CMakeFiles/cmTC_d13b2.dir/build.make CMakeFiles/cmTC_d13b2.dir/build
+Building C object CMakeFiles/cmTC_d13b2.dir/feature_tests.c.o
+/usr/bin/cc    -O0 -ffunction-sections -fdata-sections -m64 -fPIC    -std=c11 -o CMakeFiles/cmTC_d13b2.dir/feature_tests.c.o   -c /Users/Signal/Documents/github/p2p3/target/debug/build/libgit2-sys-368b385e55755cd9/out/build/CMakeFiles/feature_tests.c
+Linking C executable cmTC_d13b2
+/usr/local/Cellar/cmake/3.4.0/bin/cmake -E cmake_link_script CMakeFiles/cmTC_d13b2.dir/link.txt --verbose=1
+/usr/bin/cc   -O0 -ffunction-sections -fdata-sections -m64 -fPIC  -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTC_d13b2.dir/feature_tests.c.o  -o cmTC_d13b2  
+
+
+    Feature record: C_FEATURE:1c_function_prototypes
+    Feature record: C_FEATURE:1c_restrict
+    Feature record: C_FEATURE:1c_static_assert
+    Feature record: C_FEATURE:1c_variadic_macros
+
+
+Detecting C [-std=c99] compiler features compiled with the following output:
+Change Dir: /Users/Signal/Documents/github/p2p3/target/debug/build/libgit2-sys-368b385e55755cd9/out/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_a65eb/fast"
+/Library/Developer/CommandLineTools/usr/bin/make -f CMakeFiles/cmTC_a65eb.dir/build.make CMakeFiles/cmTC_a65eb.dir/build
+Building C object CMakeFiles/cmTC_a65eb.dir/feature_tests.c.o
+/usr/bin/cc    -O0 -ffunction-sections -fdata-sections -m64 -fPIC    -std=c99 -o CMakeFiles/cmTC_a65eb.dir/feature_tests.c.o   -c /Users/Signal/Documents/github/p2p3/target/debug/build/libgit2-sys-368b385e55755cd9/out/build/CMakeFiles/feature_tests.c
+Linking C executable cmTC_a65eb
+/usr/local/Cellar/cmake/3.4.0/bin/cmake -E cmake_link_script CMakeFiles/cmTC_a65eb.dir/link.txt --verbose=1
+/usr/bin/cc   -O0 -ffunction-sections -fdata-sections -m64 -fPIC  -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTC_a65eb.dir/feature_tests.c.o  -o cmTC_a65eb  
+
+
+    Feature record: C_FEATURE:1c_function_prototypes
+    Feature record: C_FEATURE:1c_restrict
+    Feature record: C_FEATURE:0c_static_assert
+    Feature record: C_FEATURE:1c_variadic_macros
+
+
+Detecting C [-std=c90] compiler features compiled with the following output:
+Change Dir: /Users/Signal/Documents/github/p2p3/target/debug/build/libgit2-sys-368b385e55755cd9/out/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_bf7f9/fast"
+/Library/Developer/CommandLineTools/usr/bin/make -f CMakeFiles/cmTC_bf7f9.dir/build.make CMakeFiles/cmTC_bf7f9.dir/build
+Building C object CMakeFiles/cmTC_bf7f9.dir/feature_tests.c.o
+/usr/bin/cc    -O0 -ffunction-sections -fdata-sections -m64 -fPIC    -std=c90 -o CMakeFiles/cmTC_bf7f9.dir/feature_tests.c.o   -c /Users/Signal/Documents/github/p2p3/target/debug/build/libgit2-sys-368b385e55755cd9/out/build/CMakeFiles/feature_tests.c
+Linking C executable cmTC_bf7f9
+/usr/local/Cellar/cmake/3.4.0/bin/cmake -E cmake_link_script CMakeFiles/cmTC_bf7f9.dir/link.txt --verbose=1
+/usr/bin/cc   -O0 -ffunction-sections -fdata-sections -m64 -fPIC  -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTC_bf7f9.dir/feature_tests.c.o  -o cmTC_bf7f9  
+
+
+    Feature record: C_FEATURE:1c_function_prototypes
+    Feature record: C_FEATURE:0c_restrict
+    Feature record: C_FEATURE:0c_static_assert
+    Feature record: C_FEATURE:0c_variadic_macros
+Performing C SOURCE FILE Test HAVE_STRUCT_STAT_ST_ATIMESPEC succeded with the following output:
+Change Dir: /Users/Signal/Documents/github/p2p3/target/debug/build/libgit2-sys-368b385e55755cd9/out/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_e27c2/fast"
+/Library/Developer/CommandLineTools/usr/bin/make -f CMakeFiles/cmTC_e27c2.dir/build.make CMakeFiles/cmTC_e27c2.dir/build
+Building C object CMakeFiles/cmTC_e27c2.dir/src.c.o
+/usr/bin/cc    -O0 -ffunction-sections -fdata-sections -m64 -fPIC -DHAVE_STRUCT_STAT_ST_ATIMESPEC   -o CMakeFiles/cmTC_e27c2.dir/src.c.o   -c /Users/Signal/Documents/github/p2p3/target/debug/build/libgit2-sys-368b385e55755cd9/out/build/CMakeFiles/CMakeTmp/src.c
+Linking C executable cmTC_e27c2
+/usr/local/Cellar/cmake/3.4.0/bin/cmake -E cmake_link_script CMakeFiles/cmTC_e27c2.dir/link.txt --verbose=1
+/usr/bin/cc   -O0 -ffunction-sections -fdata-sections -m64 -fPIC -DHAVE_STRUCT_STAT_ST_ATIMESPEC -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTC_e27c2.dir/src.c.o  -o cmTC_e27c2  
+
+Source file was:
+
+#include <sys/types.h>
+#include <sys/stat.h>
+
+int main()
+{
+   (void)sizeof(((struct stat *)0)->st_atimespec);
+   return 0;
+}
+
+Performing C SOURCE FILE Test HAVE_STRUCT_STAT_NSEC succeded with the following output:
+Change Dir: /Users/Signal/Documents/github/p2p3/target/debug/build/libgit2-sys-368b385e55755cd9/out/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_d6bde/fast"
+/Library/Developer/CommandLineTools/usr/bin/make -f CMakeFiles/cmTC_d6bde.dir/build.make CMakeFiles/cmTC_d6bde.dir/build
+Building C object CMakeFiles/cmTC_d6bde.dir/src.c.o
+/usr/bin/cc    -O0 -ffunction-sections -fdata-sections -m64 -fPIC -DHAVE_STRUCT_STAT_NSEC   -o CMakeFiles/cmTC_d6bde.dir/src.c.o   -c /Users/Signal/Documents/github/p2p3/target/debug/build/libgit2-sys-368b385e55755cd9/out/build/CMakeFiles/CMakeTmp/src.c
+Linking C executable cmTC_d6bde
+/usr/local/Cellar/cmake/3.4.0/bin/cmake -E cmake_link_script CMakeFiles/cmTC_d6bde.dir/link.txt --verbose=1
+/usr/bin/cc   -O0 -ffunction-sections -fdata-sections -m64 -fPIC -DHAVE_STRUCT_STAT_NSEC -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTC_d6bde.dir/src.c.o  -o cmTC_d6bde  
+
+Source file was:
+
+#include <sys/stat.h>
+
+int main()
+{
+   (void)sizeof(((struct stat *)0)->st_mtimespec.tv_nsec);
+   return 0;
+}
+
+Determining if the function SSLCreateContext exists in the /System/Library/Frameworks/Security.framework passed with the following output:
+Change Dir: /Users/Signal/Documents/github/p2p3/target/debug/build/libgit2-sys-368b385e55755cd9/out/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_f8e78/fast"
+/Library/Developer/CommandLineTools/usr/bin/make -f CMakeFiles/cmTC_f8e78.dir/build.make CMakeFiles/cmTC_f8e78.dir/build
+Building C object CMakeFiles/cmTC_f8e78.dir/CheckFunctionExists.c.o
+/usr/bin/cc    -O0 -ffunction-sections -fdata-sections -m64 -fPIC -DCHECK_FUNCTION_EXISTS=SSLCreateContext   -o CMakeFiles/cmTC_f8e78.dir/CheckFunctionExists.c.o   -c /usr/local/Cellar/cmake/3.4.0/share/cmake/Modules/CheckFunctionExists.c
+Linking C executable cmTC_f8e78
+/usr/local/Cellar/cmake/3.4.0/bin/cmake -E cmake_link_script CMakeFiles/cmTC_f8e78.dir/link.txt --verbose=1
+/usr/bin/cc   -O0 -ffunction-sections -fdata-sections -m64 -fPIC -DCHECK_FUNCTION_EXISTS=SSLCreateContext -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTC_f8e78.dir/CheckFunctionExists.c.o  -o cmTC_f8e78  -L/Users/Signal/Documents/github/p2p3/target/debug/build/libgit2-sys-368b385e55755cd9/out/build/CMakeFiles/CMakeTmp/Security/SecureTransport.h  -framework Security -Wl,-rpath,/Users/Signal/Documents/github/p2p3/target/debug/build/libgit2-sys-368b385e55755cd9/out/build/CMakeFiles/CMakeTmp/Security/SecureTransport.h 
+ld: warning: directory not found for option '-L/Users/Signal/Documents/github/p2p3/target/debug/build/libgit2-sys-368b385e55755cd9/out/build/CMakeFiles/CMakeTmp/Security/SecureTransport.h'
+
+
+Performing C SOURCE FILE Test IS_WDOCUMENTATION_SUPPORTED succeded with the following output:
+Change Dir: /Users/Signal/Documents/github/p2p3/target/debug/build/libgit2-sys-368b385e55755cd9/out/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_f44e9/fast"
+/Library/Developer/CommandLineTools/usr/bin/make -f CMakeFiles/cmTC_f44e9.dir/build.make CMakeFiles/cmTC_f44e9.dir/build
+Building C object CMakeFiles/cmTC_f44e9.dir/src.c.o
+/usr/bin/cc    -D_GNU_SOURCE -Wall -Wextra  -O0 -ffunction-sections -fdata-sections -m64 -fPIC -DIS_WDOCUMENTATION_SUPPORTED   -Wdocumentation -o CMakeFiles/cmTC_f44e9.dir/src.c.o   -c /Users/Signal/Documents/github/p2p3/target/debug/build/libgit2-sys-368b385e55755cd9/out/build/CMakeFiles/CMakeTmp/src.c
+Linking C executable cmTC_f44e9
+/usr/local/Cellar/cmake/3.4.0/bin/cmake -E cmake_link_script CMakeFiles/cmTC_f44e9.dir/link.txt --verbose=1
+/usr/bin/cc  -D_GNU_SOURCE -Wall -Wextra  -O0 -ffunction-sections -fdata-sections -m64 -fPIC -DIS_WDOCUMENTATION_SUPPORTED -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTC_f44e9.dir/src.c.o  -o cmTC_f44e9  
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test IS_WNO-MISSING-FIELD-INITIALIZERS_SUPPORTED succeded with the following output:
+Change Dir: /Users/Signal/Documents/github/p2p3/target/debug/build/libgit2-sys-368b385e55755cd9/out/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_19868/fast"
+/Library/Developer/CommandLineTools/usr/bin/make -f CMakeFiles/cmTC_19868.dir/build.make CMakeFiles/cmTC_19868.dir/build
+Building C object CMakeFiles/cmTC_19868.dir/src.c.o
+/usr/bin/cc    -D_GNU_SOURCE -Wall -Wextra  -O0 -ffunction-sections -fdata-sections -m64 -fPIC -Wdocumentation -DIS_WNO-MISSING-FIELD-INITIALIZERS_SUPPORTED   -Wno-missing-field-initializers -o CMakeFiles/cmTC_19868.dir/src.c.o   -c /Users/Signal/Documents/github/p2p3/target/debug/build/libgit2-sys-368b385e55755cd9/out/build/CMakeFiles/CMakeTmp/src.c
+In file included from <built-in>:325:
+<command line>:2:15: warning: ISO C99 requires whitespace after the macro name [-Wc99-extensions]
+#define IS_WNO-MISSING-FIELD-INITIALIZERS_SUPPORTED 1
+              ^
+1 warning generated.
+Linking C executable cmTC_19868
+/usr/local/Cellar/cmake/3.4.0/bin/cmake -E cmake_link_script CMakeFiles/cmTC_19868.dir/link.txt --verbose=1
+/usr/bin/cc  -D_GNU_SOURCE -Wall -Wextra  -O0 -ffunction-sections -fdata-sections -m64 -fPIC -Wdocumentation -DIS_WNO-MISSING-FIELD-INITIALIZERS_SUPPORTED -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTC_19868.dir/src.c.o  -o cmTC_19868  
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test IS_WSTRICT-ALIASING=2_SUPPORTED succeded with the following output:
+Change Dir: /Users/Signal/Documents/github/p2p3/target/debug/build/libgit2-sys-368b385e55755cd9/out/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_c4cd1/fast"
+/Library/Developer/CommandLineTools/usr/bin/make -f CMakeFiles/cmTC_c4cd1.dir/build.make CMakeFiles/cmTC_c4cd1.dir/build
+Building C object CMakeFiles/cmTC_c4cd1.dir/src.c.o
+/usr/bin/cc    -D_GNU_SOURCE -Wall -Wextra  -O0 -ffunction-sections -fdata-sections -m64 -fPIC -Wdocumentation -Wno-missing-field-initializers -DIS_WSTRICT-ALIASING=2_SUPPORTED   -Wstrict-aliasing=2 -o CMakeFiles/cmTC_c4cd1.dir/src.c.o   -c /Users/Signal/Documents/github/p2p3/target/debug/build/libgit2-sys-368b385e55755cd9/out/build/CMakeFiles/CMakeTmp/src.c
+In file included from <built-in>:325:
+<command line>:2:19: warning: ISO C99 requires whitespace after the macro name [-Wc99-extensions]
+#define IS_WSTRICT-ALIASING 2_SUPPORTED
+                  ^
+1 warning generated.
+Linking C executable cmTC_c4cd1
+/usr/local/Cellar/cmake/3.4.0/bin/cmake -E cmake_link_script CMakeFiles/cmTC_c4cd1.dir/link.txt --verbose=1
+/usr/bin/cc  -D_GNU_SOURCE -Wall -Wextra  -O0 -ffunction-sections -fdata-sections -m64 -fPIC -Wdocumentation -Wno-missing-field-initializers -DIS_WSTRICT-ALIASING=2_SUPPORTED -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTC_c4cd1.dir/src.c.o  -o cmTC_c4cd1  
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test IS_WSTRICT-PROTOTYPES_SUPPORTED succeded with the following output:
+Change Dir: /Users/Signal/Documents/github/p2p3/target/debug/build/libgit2-sys-368b385e55755cd9/out/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_45cf2/fast"
+/Library/Developer/CommandLineTools/usr/bin/make -f CMakeFiles/cmTC_45cf2.dir/build.make CMakeFiles/cmTC_45cf2.dir/build
+Building C object CMakeFiles/cmTC_45cf2.dir/src.c.o
+/usr/bin/cc    -D_GNU_SOURCE -Wall -Wextra  -O0 -ffunction-sections -fdata-sections -m64 -fPIC -Wdocumentation -Wno-missing-field-initializers -Wstrict-aliasing=2 -DIS_WSTRICT-PROTOTYPES_SUPPORTED   -Wstrict-prototypes -o CMakeFiles/cmTC_45cf2.dir/src.c.o   -c /Users/Signal/Documents/github/p2p3/target/debug/build/libgit2-sys-368b385e55755cd9/out/build/CMakeFiles/CMakeTmp/src.c
+In file included from <built-in>:325:
+<command line>:2:19: warning: ISO C99 requires whitespace after the macro name [-Wc99-extensions]
+#define IS_WSTRICT-PROTOTYPES_SUPPORTED 1
+                  ^
+1 warning generated.
+Linking C executable cmTC_45cf2
+/usr/local/Cellar/cmake/3.4.0/bin/cmake -E cmake_link_script CMakeFiles/cmTC_45cf2.dir/link.txt --verbose=1
+/usr/bin/cc  -D_GNU_SOURCE -Wall -Wextra  -O0 -ffunction-sections -fdata-sections -m64 -fPIC -Wdocumentation -Wno-missing-field-initializers -Wstrict-aliasing=2 -DIS_WSTRICT-PROTOTYPES_SUPPORTED -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTC_45cf2.dir/src.c.o  -o cmTC_45cf2  
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test IS_WDECLARATION-AFTER-STATEMENT_SUPPORTED succeded with the following output:
+Change Dir: /Users/Signal/Documents/github/p2p3/target/debug/build/libgit2-sys-368b385e55755cd9/out/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_b749f/fast"
+/Library/Developer/CommandLineTools/usr/bin/make -f CMakeFiles/cmTC_b749f.dir/build.make CMakeFiles/cmTC_b749f.dir/build
+Building C object CMakeFiles/cmTC_b749f.dir/src.c.o
+/usr/bin/cc    -D_GNU_SOURCE -Wall -Wextra  -O0 -ffunction-sections -fdata-sections -m64 -fPIC -Wdocumentation -Wno-missing-field-initializers -Wstrict-aliasing=2 -Wstrict-prototypes -DIS_WDECLARATION-AFTER-STATEMENT_SUPPORTED   -Wdeclaration-after-statement -o CMakeFiles/cmTC_b749f.dir/src.c.o   -c /Users/Signal/Documents/github/p2p3/target/debug/build/libgit2-sys-368b385e55755cd9/out/build/CMakeFiles/CMakeTmp/src.c
+In file included from <built-in>:325:
+<command line>:2:24: warning: ISO C99 requires whitespace after the macro name [-Wc99-extensions]
+#define IS_WDECLARATION-AFTER-STATEMENT_SUPPORTED 1
+                       ^
+1 warning generated.
+Linking C executable cmTC_b749f
+/usr/local/Cellar/cmake/3.4.0/bin/cmake -E cmake_link_script CMakeFiles/cmTC_b749f.dir/link.txt --verbose=1
+/usr/bin/cc  -D_GNU_SOURCE -Wall -Wextra  -O0 -ffunction-sections -fdata-sections -m64 -fPIC -Wdocumentation -Wno-missing-field-initializers -Wstrict-aliasing=2 -Wstrict-prototypes -DIS_WDECLARATION-AFTER-STATEMENT_SUPPORTED -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTC_b749f.dir/src.c.o  -o cmTC_b749f  
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test IS_WNO-UNUSED-CONST-VARIABLE_SUPPORTED succeded with the following output:
+Change Dir: /Users/Signal/Documents/github/p2p3/target/debug/build/libgit2-sys-368b385e55755cd9/out/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_79ca7/fast"
+/Library/Developer/CommandLineTools/usr/bin/make -f CMakeFiles/cmTC_79ca7.dir/build.make CMakeFiles/cmTC_79ca7.dir/build
+Building C object CMakeFiles/cmTC_79ca7.dir/src.c.o
+/usr/bin/cc    -D_GNU_SOURCE -Wall -Wextra  -O0 -ffunction-sections -fdata-sections -m64 -fPIC -Wdocumentation -Wno-missing-field-initializers -Wstrict-aliasing=2 -Wstrict-prototypes -Wdeclaration-after-statement -DIS_WNO-UNUSED-CONST-VARIABLE_SUPPORTED   -Wno-unused-const-variable -o CMakeFiles/cmTC_79ca7.dir/src.c.o   -c /Users/Signal/Documents/github/p2p3/target/debug/build/libgit2-sys-368b385e55755cd9/out/build/CMakeFiles/CMakeTmp/src.c
+In file included from <built-in>:325:
+<command line>:2:15: warning: ISO C99 requires whitespace after the macro name [-Wc99-extensions]
+#define IS_WNO-UNUSED-CONST-VARIABLE_SUPPORTED 1
+              ^
+1 warning generated.
+Linking C executable cmTC_79ca7
+/usr/local/Cellar/cmake/3.4.0/bin/cmake -E cmake_link_script CMakeFiles/cmTC_79ca7.dir/link.txt --verbose=1
+/usr/bin/cc  -D_GNU_SOURCE -Wall -Wextra  -O0 -ffunction-sections -fdata-sections -m64 -fPIC -Wdocumentation -Wno-missing-field-initializers -Wstrict-aliasing=2 -Wstrict-prototypes -Wdeclaration-after-statement -DIS_WNO-UNUSED-CONST-VARIABLE_SUPPORTED -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTC_79ca7.dir/src.c.o  -o cmTC_79ca7  
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test IS_WNO-UNUSED-FUNCTION_SUPPORTED succeded with the following output:
+Change Dir: /Users/Signal/Documents/github/p2p3/target/debug/build/libgit2-sys-368b385e55755cd9/out/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_b7f4c/fast"
+/Library/Developer/CommandLineTools/usr/bin/make -f CMakeFiles/cmTC_b7f4c.dir/build.make CMakeFiles/cmTC_b7f4c.dir/build
+Building C object CMakeFiles/cmTC_b7f4c.dir/src.c.o
+/usr/bin/cc    -D_GNU_SOURCE -Wall -Wextra  -O0 -ffunction-sections -fdata-sections -m64 -fPIC -Wdocumentation -Wno-missing-field-initializers -Wstrict-aliasing=2 -Wstrict-prototypes -Wdeclaration-after-statement -Wno-unused-const-variable -DIS_WNO-UNUSED-FUNCTION_SUPPORTED   -Wno-unused-function -o CMakeFiles/cmTC_b7f4c.dir/src.c.o   -c /Users/Signal/Documents/github/p2p3/target/debug/build/libgit2-sys-368b385e55755cd9/out/build/CMakeFiles/CMakeTmp/src.c
+In file included from <built-in>:325:
+<command line>:2:15: warning: ISO C99 requires whitespace after the macro name [-Wc99-extensions]
+#define IS_WNO-UNUSED-FUNCTION_SUPPORTED 1
+              ^
+1 warning generated.
+Linking C executable cmTC_b7f4c
+/usr/local/Cellar/cmake/3.4.0/bin/cmake -E cmake_link_script CMakeFiles/cmTC_b7f4c.dir/link.txt --verbose=1
+/usr/bin/cc  -D_GNU_SOURCE -Wall -Wextra  -O0 -ffunction-sections -fdata-sections -m64 -fPIC -Wdocumentation -Wno-missing-field-initializers -Wstrict-aliasing=2 -Wstrict-prototypes -Wdeclaration-after-statement -Wno-unused-const-variable -DIS_WNO-UNUSED-FUNCTION_SUPPORTED -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTC_b7f4c.dir/src.c.o  -o cmTC_b7f4c  
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test IS_WNO-DEPRECATED-DECLARATIONS_SUPPORTED succeded with the following output:
+Change Dir: /Users/Signal/Documents/github/p2p3/target/debug/build/libgit2-sys-368b385e55755cd9/out/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_75c91/fast"
+/Library/Developer/CommandLineTools/usr/bin/make -f CMakeFiles/cmTC_75c91.dir/build.make CMakeFiles/cmTC_75c91.dir/build
+Building C object CMakeFiles/cmTC_75c91.dir/src.c.o
+/usr/bin/cc    -D_GNU_SOURCE -Wall -Wextra  -O0 -ffunction-sections -fdata-sections -m64 -fPIC -Wdocumentation -Wno-missing-field-initializers -Wstrict-aliasing=2 -Wstrict-prototypes -Wdeclaration-after-statement -Wno-unused-const-variable -Wno-unused-function -DIS_WNO-DEPRECATED-DECLARATIONS_SUPPORTED   -Wno-deprecated-declarations -o CMakeFiles/cmTC_75c91.dir/src.c.o   -c /Users/Signal/Documents/github/p2p3/target/debug/build/libgit2-sys-368b385e55755cd9/out/build/CMakeFiles/CMakeTmp/src.c
+In file included from <built-in>:325:
+<command line>:2:15: warning: ISO C99 requires whitespace after the macro name [-Wc99-extensions]
+#define IS_WNO-DEPRECATED-DECLARATIONS_SUPPORTED 1
+              ^
+1 warning generated.
+Linking C executable cmTC_75c91
+/usr/local/Cellar/cmake/3.4.0/bin/cmake -E cmake_link_script CMakeFiles/cmTC_75c91.dir/link.txt --verbose=1
+/usr/bin/cc  -D_GNU_SOURCE -Wall -Wextra  -O0 -ffunction-sections -fdata-sections -m64 -fPIC -Wdocumentation -Wno-missing-field-initializers -Wstrict-aliasing=2 -Wstrict-prototypes -Wdeclaration-after-statement -Wno-unused-const-variable -Wno-unused-function -DIS_WNO-DEPRECATED-DECLARATIONS_SUPPORTED -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTC_75c91.dir/src.c.o  -o cmTC_75c91  
+
+Source file was:
+int main(void) { return 0; }
+Determining if the function qsort_r exists passed with the following output:
+Change Dir: /Users/Signal/Documents/github/p2p3/target/debug/build/libgit2-sys-368b385e55755cd9/out/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_c3b45/fast"
+/Library/Developer/CommandLineTools/usr/bin/make -f CMakeFiles/cmTC_c3b45.dir/build.make CMakeFiles/cmTC_c3b45.dir/build
+Building C object CMakeFiles/cmTC_c3b45.dir/CheckFunctionExists.c.o
+/usr/bin/cc    -D_GNU_SOURCE -Wall -Wextra  -O0 -ffunction-sections -fdata-sections -m64 -fPIC -Wdocumentation -Wno-missing-field-initializers -Wstrict-aliasing=2 -Wstrict-prototypes -Wdeclaration-after-statement -Wno-unused-const-variable -Wno-unused-function -Wno-deprecated-declarations -DCHECK_FUNCTION_EXISTS=qsort_r   -o CMakeFiles/cmTC_c3b45.dir/CheckFunctionExists.c.o   -c /usr/local/Cellar/cmake/3.4.0/share/cmake/Modules/CheckFunctionExists.c
+Linking C executable cmTC_c3b45
+/usr/local/Cellar/cmake/3.4.0/bin/cmake -E cmake_link_script CMakeFiles/cmTC_c3b45.dir/link.txt --verbose=1
+/usr/bin/cc  -D_GNU_SOURCE -Wall -Wextra  -O0 -ffunction-sections -fdata-sections -m64 -fPIC -Wdocumentation -Wno-missing-field-initializers -Wstrict-aliasing=2 -Wstrict-prototypes -Wdeclaration-after-statement -Wno-unused-const-variable -Wno-unused-function -Wno-deprecated-declarations -DCHECK_FUNCTION_EXISTS=qsort_r -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTC_c3b45.dir/CheckFunctionExists.c.o  -o cmTC_c3b45  
+
+
+Determining if the include file pthread.h exists passed with the following output:
+Change Dir: /Users/Signal/Documents/github/p2p3/target/debug/build/libgit2-sys-368b385e55755cd9/out/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_e685b/fast"
+/Library/Developer/CommandLineTools/usr/bin/make -f CMakeFiles/cmTC_e685b.dir/build.make CMakeFiles/cmTC_e685b.dir/build
+Building C object CMakeFiles/cmTC_e685b.dir/CheckIncludeFile.c.o
+/usr/bin/cc    -D_GNU_SOURCE -Wall -Wextra  -O0 -ffunction-sections -fdata-sections -m64 -fPIC -Wdocumentation -Wno-missing-field-initializers -Wstrict-aliasing=2 -Wstrict-prototypes -Wdeclaration-after-statement -Wno-unused-const-variable -Wno-unused-function -Wno-deprecated-declarations    -o CMakeFiles/cmTC_e685b.dir/CheckIncludeFile.c.o   -c /Users/Signal/Documents/github/p2p3/target/debug/build/libgit2-sys-368b385e55755cd9/out/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_e685b
+/usr/local/Cellar/cmake/3.4.0/bin/cmake -E cmake_link_script CMakeFiles/cmTC_e685b.dir/link.txt --verbose=1
+/usr/bin/cc  -D_GNU_SOURCE -Wall -Wextra  -O0 -ffunction-sections -fdata-sections -m64 -fPIC -Wdocumentation -Wno-missing-field-initializers -Wstrict-aliasing=2 -Wstrict-prototypes -Wdeclaration-after-statement -Wno-unused-const-variable -Wno-unused-function -Wno-deprecated-declarations  -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTC_e685b.dir/CheckIncludeFile.c.o  -o cmTC_e685b  
+
+
+Determining if the pthread_create exist passed with the following output:
+Change Dir: /Users/Signal/Documents/github/p2p3/target/debug/build/libgit2-sys-368b385e55755cd9/out/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_eb3f9/fast"
+/Library/Developer/CommandLineTools/usr/bin/make -f CMakeFiles/cmTC_eb3f9.dir/build.make CMakeFiles/cmTC_eb3f9.dir/build
+Building C object CMakeFiles/cmTC_eb3f9.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -D_GNU_SOURCE -Wall -Wextra  -O0 -ffunction-sections -fdata-sections -m64 -fPIC -Wdocumentation -Wno-missing-field-initializers -Wstrict-aliasing=2 -Wstrict-prototypes -Wdeclaration-after-statement -Wno-unused-const-variable -Wno-unused-function -Wno-deprecated-declarations    -o CMakeFiles/cmTC_eb3f9.dir/CheckSymbolExists.c.o   -c /Users/Signal/Documents/github/p2p3/target/debug/build/libgit2-sys-368b385e55755cd9/out/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_eb3f9
+/usr/local/Cellar/cmake/3.4.0/bin/cmake -E cmake_link_script CMakeFiles/cmTC_eb3f9.dir/link.txt --verbose=1
+/usr/bin/cc  -D_GNU_SOURCE -Wall -Wextra  -O0 -ffunction-sections -fdata-sections -m64 -fPIC -Wdocumentation -Wno-missing-field-initializers -Wstrict-aliasing=2 -Wstrict-prototypes -Wdeclaration-after-statement -Wno-unused-const-variable -Wno-unused-function -Wno-deprecated-declarations  -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTC_eb3f9.dir/CheckSymbolExists.c.o  -o cmTC_eb3f9  
+
+File /Users/Signal/Documents/github/p2p3/target/debug/build/libgit2-sys-368b385e55755cd9/out/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <pthread.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef pthread_create
+  return ((int*)(&pthread_create))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
