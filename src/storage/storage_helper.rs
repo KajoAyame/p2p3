@@ -11,17 +11,23 @@ use std::path::Path;
 #[derive(Clone,PartialEq,Debug)]
 pub struct GitAccess {
     repo_url: &'static str,
+    local_url: &'static str,
     username: &'static str,
     password: &'static str,
 }
 
 impl GitAccess {
-    pub fn new(repo: &'static str, usern: &'static str, passwd: &'static str) -> GitAccess {
-        GitAccess{repo_url: repo, username: usern, password: passwd}
+    pub fn new(repo: &'static str, local: &'static str, usern: &'static str, passwd: &'static str) -> GitAccess {
+        GitAccess{
+            repo_url: repo,
+            local_url: local,
+            username: usern,
+            password: passwd
+        }
     }
 
-    pub fn clone(&self, dst_dir: &str) -> Result<(), git2::Error> {
-        match Repository::clone(self.repo_url, dst_dir) {
+    pub fn clone(&self) -> Result<(), git2::Error> {
+        match Repository::clone(self.repo_url, self.local_url) {
             Ok(repo) => repo,
             Err(e) => return Err(e)
         };
@@ -29,7 +35,7 @@ impl GitAccess {
     }
 
     pub fn commit_path(&self, commit_message: &str, file_path: &str) -> Result<(), Error>  {
-        let repo = match Repository::open(self.repo_url) {
+        let repo = match Repository::open(self.local_url) {
             Ok(repo) => repo,
             Err(e) =>return Err(e)
         };
@@ -54,7 +60,7 @@ impl GitAccess {
     }
 
     pub fn push(&self) -> Result<(), git2::Error> {
-        let repo = match Repository::open(self.repo_url) {
+        let repo = match Repository::open(self.local_url) {
             Ok(repo) => repo,
             Err(e) => return Err(e)
         };

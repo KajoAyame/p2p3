@@ -1,6 +1,6 @@
 [package]
 name = "p2p3"
-version = "0.1.5"
+version = "0.1.6"
 authors = ["Matthew Kellogg <kellogg92@gmail.com>"]
 
 [dependencies]

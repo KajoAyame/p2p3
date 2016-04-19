@@ -12,7 +12,7 @@ use std::sync::mpsc::channel;
 use std::io::prelude::*;
 use rustc_serialize::json;
 use std::io;
-use crust::{Service, ConnectionInfoResult};
+use crust::{Service, ConnectionInfoResult, StaticContactInfo};
 use std::sync::{Arc, Mutex};
 use p2p3::network::network_manager::Network;
 use p2p3::network::network_manager::handle_new_peer;
@@ -26,31 +26,24 @@ use p2p3::storage::storage_helper::GitAccess;
 use std::thread;
 use std::str::FromStr;
 use bincode::rustc_serialize::{encode, decode}; // Use for encode and decode
+use rustc_serialize::json::Json;
 
 
 pub fn main() {
     /*
      *  Bootstrap
      */
-    let git = GitAccess::new("https://github.com/KajoAyame/p2p3.git", "zhou.xinghao.1991@gmail.com", "123456abc");
-    git.clone("temp");
-    //let boot = BootstrapHandler::bootstrap_load("temp/p2p3.crust.config");
-    //let conf = json::encode(&boot.config).unwrap();
+    let git = GitAccess::new("https://github.com/KajoAyame/p2p3.git", "temp", "zhou.xinghao.1991@gmail.com", "123456abc");
 
-    //println!("{}", conf);
-    match git.commit_path("Update config file", "temp/p2p3.crust.config") {
+    match git.clone() {
         Ok(()) => (),
         Err(e) => {
-            println!("Commit error: {}", e);
+            println!("clone error: {}", e);
         }
     }
-    match git.push() {
-        Ok(()) => (),
-        Err(e) => {
-            println!("Push error: {}", e);
-        }
-    }
-    /*
+    let mut boot = BootstrapHandler::bootstrap_load("temp/p2p3.crust.config");
+    let conf = json::encode(&boot.config).unwrap();
+
      // Construct Service and start listening
      let (channel_sender, channel_receiver) = channel();
      let (category_tx, category_rx) = channel();
@@ -66,12 +59,51 @@ pub fn main() {
      /* If this file name is "file_name.rs",
       * it will read the config file named "file_name.crust.config".
       */
-     let config = unwrap_result!(::crust::read_config_file()); // ".crust.config"
+    let config = unwrap_result!(::crust::read_config_file()); // ".crust.config"
 
-     let mut service = unwrap_result!(Service::with_config(event_sender, &config));
-     unwrap_result!(service.start_listening_tcp());
-     unwrap_result!(service.start_listening_utp());
-     let my_id = service.id();
+    let mut service = unwrap_result!(Service::with_config(event_sender, &config));
+    unwrap_result!(service.start_listening_tcp());
+    unwrap_result!(service.start_listening_utp());
+    let my_id = service.id();
+
+    /*
+     *  Update the config file
+     */
+    // boot.update_config(git, s);
+    service.prepare_connection_info(0);
+
+    match unwrap_result!(channel_receiver.recv()) {
+        crust::Event::ConnectionInfoPrepared(result) => {
+            println!("prepared!");
+
+            let ConnectionInfoResult {
+                result_token, result } = result;
+            let info = result.unwrap();
+            let their_info = info.to_their_connection_info();
+            let info_json = unwrap_result!(json::encode(&their_info));
+            //println!("Share this info with the peer you want to connect to:");
+            //println!("{}", info_json);
+
+            //let json_obj: Json = input_data.to_json();
+            let data = Json::from_str(info_json.as_str()).unwrap();
+            let obj = data.as_object().unwrap();
+            let foo = obj.get("static_contact_info").unwrap();
+            println!("foo = \n{}", foo);
+
+            let json_str: String = foo.to_string();
+            println!("json_str = \n{}", json_str);
+
+            let mut info: StaticContactInfo = json::decode(&json_str).unwrap();
+            info.tcp_acceptors.remove(0);
+
+            boot.update_config(git, info);
+        }
+        event => panic!("Received unexpected event: {:?}", event),
+    }
+
+    println!("/////// END ///////");
+
+
 
      // Enable listening and responding to peers searching for us.
      service.start_service_discovery();
@@ -319,17 +351,5 @@ pub fn main() {
 
      drop(service);
      assert!(handler.join().is_ok());
-     */
+
 }
-
-// Post
-/*
-fn main(){
-  let resp = http::handle()
-    .post("http://localhost:3000/login", "username=dude&password=sikrit")
-    .exec().unwrap();
-
-  println!("code={}; headers={}; body={}",
-    resp.get_code(), resp.get_headers(), resp.get_body());
-
-}*/

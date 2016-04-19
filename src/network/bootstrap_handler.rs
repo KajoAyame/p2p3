@@ -40,7 +40,7 @@ impl Default for Config {
 }
 
 pub struct BootstrapHandler {
-    pub config: Config
+    pub config: Config,
 }
 
 impl BootstrapHandler {
@@ -48,12 +48,12 @@ impl BootstrapHandler {
         let mut file = File::open(url).unwrap();
         let mut file_str = String::new();
         file.read_to_string(&mut file_str).unwrap();
-        println!("file: \n{}", file_str);
+        //println!("file: \n{}", file_str);
         // Get the config file path
         let file_name = get_file_name().unwrap().into_string().unwrap();
-        println!("file_name = {}", file_name);
+        //println!("file_name = {}", file_name);
         let path_str = "target/debug/".to_string() + &file_name; // "target/debug/" in stead of "/target/debug/"
-        println!("path = {}", path_str);
+        //println!("path = {}", path_str);
 
         // Store it in the path
         let path = Path::new(&path_str);
@@ -70,20 +70,21 @@ impl BootstrapHandler {
         let mut f = File::open(path).unwrap();
         let mut config_str = String::new();
         f.read_to_string(&mut config_str).unwrap();
-        println!("{}", config_str);
+        //println!("{}", config_str);
 
         // Read it into Config
         let con = unwrap_result!(::crust::read_config_file());
         let contacts = con.hard_coded_contacts.len();
-        println!("len = {}", contacts);
+        //println!("len = {}", contacts);
 
         let conf: Config = json::decode(&config_str).unwrap();
 
         BootstrapHandler {
-            config: conf
+            config: conf,
         }
     }
 
+    /*
     pub fn bootstrap_download(url: &str) -> BootstrapHandler{
         let resp = http::handle()
         //.get("http://54.209.245.74:8080/--bootstrap")
@@ -119,13 +120,42 @@ impl BootstrapHandler {
         let conf: Config = json::decode(&config_str).unwrap();
 
         BootstrapHandler {
-            config: conf
+            config: conf,
+            file_path: path_str.as_str()
         }
-    }
+    }*/
 
-    pub fn update_config(&mut self, git: &GitAccess, info: StaticContactInfo) {
-        self.config.hard_coded_contacts.insert(0, info);
-        git.push();
+    pub fn update_config(&mut self, git: GitAccess, info: StaticContactInfo) {
+        self.config.hard_coded_contacts[0].tcp_acceptors.insert(0, info.tcp_acceptors[0]);
+        let update_str = json::encode(&self.config).unwrap();
+
+        // Get the config file path
+        let file_name = get_file_name().unwrap().into_string().unwrap();
+        //println!("file_name = {}", file_name);
+        let path_str = "temp/".to_string() + &file_name; // "target/debug/" in stead of "/target/debug/"
+        //println!("path = {}", path_str);
+
+        // Store it in the path
+        let path = Path::new(&path_str);
+        let mut file = File::create(path.clone()).unwrap();
+
+        let file_byte = update_str.into_bytes();
+        file.write_all(&file_byte).unwrap();
+
+        //println!("******* commit *******");
+        match git.commit_path("Update config file.", "p2p3.crust.config") {
+            Ok(()) => (),
+            Err(e) => {
+                println!("Commit error: {}", e);
+            }
+        }
+
+        match git.push() {
+            Ok(()) => (),
+            Err(e) => {
+                println!("Push error: {}", e);
+            }
+        }
     }
 }
 /*
