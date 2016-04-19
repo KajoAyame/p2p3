@@ -33,7 +33,7 @@ pub fn main() {
     /*
      *  Bootstrap
      */
-    let git = GitAccess::new("https://github.com/KajoAyame/p2p3.git", "temp", "zhou.xinghao.1991@gmail.com", "123456abc");
+    let git = GitAccess::new("https://github.com/KajoAyame/p2p3_test.git", "temp", "zhou.xinghao.1991@gmail.com", "123456abc");
 
     match git.clone() {
         Ok(()) => (),
@@ -101,7 +101,7 @@ pub fn main() {
         event => panic!("Received unexpected event: {:?}", event),
     }
 
-    println!("/////// END ///////");
+    //println!("/////// END ///////");
 
 
 
