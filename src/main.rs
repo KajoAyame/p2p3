@@ -33,9 +33,13 @@ pub fn main() {
      *  Bootstrap
      */
     let git = GitAccess::new("https://github.com/KajoAyame/p2p3.git", "zhou.xinghao.1991@gmail.com", "123456abc");
-    git.clone("temp");
-    let boot = BootstrapHandler::bootstrap_load("temp/p2p3.p2p3");
+    //git.clone("temp");
+    //let boot = BootstrapHandler::bootstrap_load("temp/p2p3.crust.config");
+    //let conf = json::encode(&boot.config).unwrap();
 
+    //println!("{}", conf);
+    git.commit_path("Update config file", "temp/.p2p3.crust.config");
+    git.push();
     /*
      // Construct Service and start listening
      let (channel_sender, channel_receiver) = channel();
