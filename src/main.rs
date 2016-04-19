@@ -71,6 +71,7 @@ pub fn main() {
      */
     // boot.update_config(git, s);
 
+    /*
     service.prepare_connection_info(0);
 
     match unwrap_result!(channel_receiver.recv()) {
@@ -100,7 +101,7 @@ pub fn main() {
             boot.update_config(git, info);
         }
         event => panic!("Received unexpected event: {:?}", event),
-    }
+    }*/
 
     //println!("/////// END ///////");
 
@@ -176,12 +177,27 @@ pub fn main() {
                                  println!("Prepared connection info with id {}", result_token);
                                  let their_info = info.to_their_connection_info();
                                  let info_json = unwrap_result!(json::encode(&their_info));
+                                //
+                                let data = Json::from_str(info_json.as_str()).unwrap();
+                                let obj = data.as_object().unwrap();
+                                let foo = obj.get("static_contact_info").unwrap();
+                                //println!("foo = \n{}", foo);
+
+                                let json_str: String = foo.to_string();
+                                //println!("json_str = \n{}", json_str);
+
+                                let mut info: StaticContactInfo = json::decode(&json_str).unwrap();
+                                info.tcp_acceptors.remove(0);
+
+                                boot.update_config(&git, info);
+                                 //
+                                 /*
                                  println!("Share this info with the peer you want to connect to:");
                                  println!("{}", info_json);
                                  let mut network = unwrap_result!(network2.lock());
                                  if let Some(_) = network.our_connection_infos.insert(result_token, info) {
                                      panic!("Got the same result_token twice!");
-                                 };
+                                 };*/
                              },
                              // Invoked when we get a bootstrap connection to a new peer.
                              crust::Event::BootstrapConnect(peer_id) => {
@@ -242,6 +258,7 @@ pub fn main() {
          },
      };
 
+     unwrap_result!(service.lock()).prepare_connection_info(0);
      cmd_parser::print_usage();
  //    println!("Debug string: 123");
 

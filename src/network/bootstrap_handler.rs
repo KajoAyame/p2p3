@@ -123,7 +123,7 @@ impl BootstrapHandler {
         }
     }*/
 
-    pub fn update_config(&mut self, git: GitAccess, info: StaticContactInfo) {
+    pub fn update_config(&mut self, git: &GitAccess, info: StaticContactInfo) {
         self.config.hard_coded_contacts[0].tcp_acceptors.insert(0, info.tcp_acceptors[0]);
         let update_str = json::encode(&self.config).unwrap();
 
