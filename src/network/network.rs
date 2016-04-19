@@ -5,7 +5,7 @@ use ::crust::{ read_config_file};
 use std::env;
 
 pub struct Network {
-    name: String,
+    //name: String,
 }
 
 // simple "routing table" without any structure
@@ -21,7 +21,7 @@ impl Network {
         println!("len = {}", contacts);
 
         Network {
-            name: file_name,
+            //name: file_name,
         }
     }
 

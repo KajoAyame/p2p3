@@ -33,6 +33,7 @@ pub fn main() {
     /*
      *  Bootstrap
      */
+
     let git = GitAccess::new("https://github.com/KajoAyame/p2p3_test.git", "temp", "zhou.xinghao.1991@gmail.com", "123456abc");
 
     match git.clone() {
@@ -70,6 +71,7 @@ pub fn main() {
      *  Update the config file
      */
     // boot.update_config(git, s);
+
     service.prepare_connection_info(0);
 
     match unwrap_result!(channel_receiver.recv()) {

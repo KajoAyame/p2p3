@@ -1,6 +1,6 @@
 extern crate config_file_handler;
 
-use curl::http;
+//use curl::http;
 use std::path::Path;
 use std::fs::File;
 use std::io::prelude::*;
@@ -53,7 +53,7 @@ impl BootstrapHandler {
         let file_name = get_file_name().unwrap().into_string().unwrap();
         //println!("file_name = {}", file_name);
         let path_str = "target/debug/".to_string() + &file_name; // "target/debug/" in stead of "/target/debug/"
-        println!("path = {}", path_str);
+        //println!("path = {}", path_str);
 
         // Store it in the path
         let path = Path::new(&path_str);
@@ -74,8 +74,6 @@ impl BootstrapHandler {
 
         // Read it into Config
         let con = unwrap_result!(::crust::read_config_file());
-        let contacts = con.hard_coded_contacts.len();
-        //println!("len = {}", contacts);
 
         let conf: Config = json::decode(&config_str).unwrap();
 
@@ -131,9 +129,9 @@ impl BootstrapHandler {
 
         // Get the config file path
         let file_name = get_file_name().unwrap().into_string().unwrap();
-        println!("file_name = {}", file_name);
+        //println!("file_name = {}", file_name);
         let path_str = "temp/".to_string() + &file_name; // "target/debug/" in stead of "/target/debug/"
-        println!("path = {}", path_str);
+        //println!("path = {}", path_str);
 
         // Store it in the path
         let path = Path::new(&path_str);
