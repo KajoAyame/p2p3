@@ -6,11 +6,12 @@ extern crate rustc_serialize;
 extern crate docopt;
 extern crate curl;
 extern crate git2;
+extern crate socket_addr;
 
 mod commit;
 mod logger;
 pub mod network;
 mod permission;
-mod storage;
+pub mod storage;
 mod ui;
 mod woot;

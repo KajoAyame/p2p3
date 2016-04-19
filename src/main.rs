@@ -21,21 +21,22 @@ use p2p3::network::cmd_parser::UserCommand;
 use p2p3::network::cmd_parser::parse_user_command;
 use p2p3::network::message::{Message, Kind};
 use p2p3::network::msg_passer::MsgPasser;
-use p2p3::network::bootstrap_handler::bootstrap_download;
+use p2p3::network::bootstrap_handler::BootstrapHandler;
+use p2p3::storage::storage_helper::GitAccess;
 use std::thread;
 use std::str::FromStr;
 use bincode::rustc_serialize::{encode, decode}; // Use for encode and decode
 
 
 pub fn main() {
-    bootstrap_download("https://raw.githubusercontent.com/KajoAyame/p2p3/master/p2p3.crust.config");
-
-
     /*
      *  Bootstrap
      */
+    let git = GitAccess::new("https://github.com/KajoAyame/p2p3.git", "zhou.xinghao.1991@gmail.com", "123456abc");
+    git.clone("temp");
+    let boot = BootstrapHandler::bootstrap_load("temp/p2p3.p2p3");
 
-
+    /*
      // Construct Service and start listening
      let (channel_sender, channel_receiver) = channel();
      let (category_tx, category_rx) = channel();
@@ -304,7 +305,7 @@ pub fn main() {
 
      drop(service);
      assert!(handler.join().is_ok());
-
+     */
 }
 
 // Post
