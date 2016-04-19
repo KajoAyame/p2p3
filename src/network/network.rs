@@ -1,7 +1,7 @@
 extern crate crust;
 extern crate config_file_handler;
 
-use ::crust::{Service, ConnectionInfoResult, read_config_file, write_config_file};
+use ::crust::{ read_config_file};
 use std::env;
 
 pub struct Network {
