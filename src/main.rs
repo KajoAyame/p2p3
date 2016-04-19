@@ -43,7 +43,6 @@ pub fn main() {
         }
     }
     let mut boot = BootstrapHandler::bootstrap_load("temp/p2p3.crust.config");
-    let conf = json::encode(&boot.config).unwrap();
 
      // Construct Service and start listening
      let (channel_sender, channel_receiver) = channel();

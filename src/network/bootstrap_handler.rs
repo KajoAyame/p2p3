@@ -73,7 +73,7 @@ impl BootstrapHandler {
         //println!("{}", config_str);
 
         // Read it into Config
-        let con = unwrap_result!(::crust::read_config_file());
+        //let con = unwrap_result!(::crust::read_config_file());
 
         let conf: Config = json::decode(&config_str).unwrap();
 
