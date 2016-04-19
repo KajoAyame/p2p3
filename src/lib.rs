@@ -4,6 +4,8 @@ extern crate time;
 extern crate maidsafe_utilities;
 extern crate rustc_serialize;
 extern crate docopt;
+extern crate curl;
+extern crate git2;
 
 mod commit;
 mod logger;

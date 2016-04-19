@@ -9,12 +9,7 @@ extern crate service_discovery;
 extern crate bincode;
 
 use std::sync::mpsc::channel;
-use curl::http;
-use std::str;
 use std::io::prelude::*;
-use std::fs::File;
-use p2p3::network::network::get_file_name;
-use std::path::Path;
 use rustc_serialize::json;
 use std::io;
 use crust::{Service, ConnectionInfoResult};
@@ -26,45 +21,15 @@ use p2p3::network::cmd_parser::UserCommand;
 use p2p3::network::cmd_parser::parse_user_command;
 use p2p3::network::message::{Message, Kind};
 use p2p3::network::msg_passer::MsgPasser;
+use p2p3::network::bootstrap_handler::bootstrap_download;
 use std::thread;
 use std::str::FromStr;
 use bincode::rustc_serialize::{encode, decode}; // Use for encode and decode
 
+
 pub fn main() {
-  let resp = http::handle()
-    //.get("http://54.209.245.74:8080/--bootstrap")
-    //.get("https://github.com/KajoAyame/p2p3/blob/master/target/debug/p2p3.crust.config")
-    .get("https://raw.githubusercontent.com/KajoAyame/p2p3/master/p2p3.crust.config")
-    .exec().unwrap();
+    bootstrap_download("https://raw.githubusercontent.com/KajoAyame/p2p3/master/p2p3.crust.config");
 
-
-    // Get the config file content
-    let config_u8 = resp.get_body();
-    let config_str = str::from_utf8(&config_u8).unwrap();
-
-    //println!("body = {}", config_str);
-
-    // Get the config file path
-    let file_name = get_file_name().unwrap().into_string().unwrap();
-    println!("file_name = {}", file_name);
-    let mut path_str = "target/debug/".to_string() + &file_name; // "target/debug/" in stead of "/target/debug/"
-    println!("path = {}", path_str);
-
-    // Store it in the path
-    let path = Path::new(&path_str);
-    let mut f = File::create(path.clone()).unwrap();
-    f.write_all(config_u8).unwrap();
-
-    // Read it
-    let mut f = File::open(path).unwrap();
-    let mut s = String::new();
-    f.read_to_string(&mut s).unwrap();
-    println!("{}", s);
-
-    // Read it into Config
-    let config = unwrap_result!(::crust::read_config_file());
-    let contacts = config.hard_coded_contacts.len();
-    println!("len = {}", contacts);
 
     /*
      *  Bootstrap

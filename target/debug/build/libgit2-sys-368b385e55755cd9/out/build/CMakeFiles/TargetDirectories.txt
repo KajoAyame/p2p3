@@ -1,0 +1,1 @@
+/Users/Signal/Documents/github/p2p3/target/debug/build/libgit2-sys-368b385e55755cd9/out/build/CMakeFiles/git2.dir
