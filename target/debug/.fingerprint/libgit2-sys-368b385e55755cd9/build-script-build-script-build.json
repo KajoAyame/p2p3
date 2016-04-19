@@ -1,1 +1,0 @@
-{"rustc":10268501392800284069,"target":4086851835445132369,"profile":13023446655302672390,"local":{"variant":"Precalculated","fields":["0.4.2"]},"features":"Some([\"https\", \"libssh2-sys\", \"ssh\"])","deps":[["cmake v0.1.17",17066858191196487557],["gcc v0.3.26",8836270036097884081],["pkg-config v0.3.8",12172564521049345241]]}
