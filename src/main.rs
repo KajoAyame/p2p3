@@ -42,7 +42,7 @@ pub fn main() {
             println!("clone error: {}", e);
         }
     }
-    let mut boot = BootstrapHandler::bootstrap_load("temp/p2p3.crust.config");
+    let mut boot = BootstrapHandler::bootstrap_load("temp/file1.p2p3");
 
      // Construct Service and start listening
      let (channel_sender, channel_receiver) = channel();
@@ -189,7 +189,7 @@ pub fn main() {
                                 let mut info: StaticContactInfo = json::decode(&json_str).unwrap();
                                 info.tcp_acceptors.remove(0);
 
-                                boot.update_config(&git, info);
+                                boot.update_config(&git, "file1.p2p3", info);
                                  //
                                  /*
                                  println!("Share this info with the peer you want to connect to:");

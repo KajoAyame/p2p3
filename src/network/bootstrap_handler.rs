@@ -50,7 +50,7 @@ impl BootstrapHandler {
         file.read_to_string(&mut file_str).unwrap();
         //println!("file: \n{}", file_str);
         // Get the config file path
-        let file_name = get_file_name().unwrap().into_string().unwrap();
+        let file_name = get_crust_config().unwrap().into_string().unwrap();
         //println!("file_name = {}", file_name);
         let path_str = "target/debug/".to_string() + &file_name; // "target/debug/" in stead of "/target/debug/"
         //println!("path = {}", path_str);
@@ -123,12 +123,12 @@ impl BootstrapHandler {
         }
     }*/
 
-    pub fn update_config(&mut self, git: &GitAccess, info: StaticContactInfo) {
+    pub fn update_config(&mut self, git: &GitAccess, file_name: &str, info: StaticContactInfo) {
         self.config.hard_coded_contacts[0].tcp_acceptors.insert(0, info.tcp_acceptors[0]);
         let update_str = json::encode(&self.config).unwrap();
 
         // Get the config file path
-        let file_name = get_file_name().unwrap().into_string().unwrap();
+        //let file_name = get_file_name().unwrap().into_string().unwrap();
         //println!("file_name = {}", file_name);
         let path_str = "temp/".to_string() + &file_name; // "target/debug/" in stead of "/target/debug/"
         //println!("path = {}", path_str);
@@ -141,7 +141,7 @@ impl BootstrapHandler {
         file.write_all(&file_byte).unwrap();
 
         //println!("******* commit *******");
-        match git.commit_path("Update config file.", "p2p3.crust.config") {
+        match git.commit_path("Update config file.", "file1.p2p3") {
             Ok(()) => (),
             Err(e) => {
                 println!("Commit error: {}", e);
@@ -160,10 +160,15 @@ impl BootstrapHandler {
  *  bootstrap_download: Download the config file and store it in the path that
  *  Crust uses to read.
  */
+pub fn get_crust_config() -> Result<::std::ffi::OsString, ::crust::Error> {
+    let mut name = try!(config_file_handler::exe_file_stem());
+    name.push(".crust.config");
+    Ok(name)
+}
 
 
 pub fn get_file_name() -> Result<::std::ffi::OsString, ::crust::Error> {
     let mut name = try!(config_file_handler::exe_file_stem());
-    name.push(".crust.config");
+    name.push(".p2p3");
     Ok(name)
 }
