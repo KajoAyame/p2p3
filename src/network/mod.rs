@@ -376,8 +376,8 @@ impl MessagePasser {
         println!("Node count: {}", peers_id.len());
         for id in peers_id.iter() {
             if let Some(conn_info) = service.connection_info(id) {
-                println!("    [{}]   {} <--> {} [{}][{}]",
-                         id, conn_info.our_addr, conn_info.their_addr, conn_info.protocol,
+                println!("    [{}]   {} <--> [{}]   {} [{}][{}]",
+                         self.my_id, conn_info.our_addr, id, conn_info.their_addr, conn_info.protocol,
                          if conn_info.closed { "closed" } else { "open" }
                 );
             }
