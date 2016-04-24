@@ -1,6 +1,6 @@
 [package]
 name = "p2p3"
-version = "0.1.6"
+version = "0.1.5"
 authors = ["Matthew Kellogg <kellogg92@gmail.com>"]
 
 [dependencies]
@@ -17,6 +17,10 @@ git2 = "*"
 rand = "0.3"
 ws = "*"
 url = "*"
-curl = "0.2.18"
+getopts = "0.2"
 config_file_handler = "~0.3.0"
 socket_addr = "~0.1.0"
+
+[[example]]
+name = "network"
+path = "examples/network/main.rs"

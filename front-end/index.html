@@ -1,0 +1,30 @@
+<html>
+  <head>
+    <title>P2P3</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="styles/style.css">
+    <script type="text/javascript" src="node_modules/ace-builds/src-min-noconflict/ace.js"></script>
+  </head>
+  <body>
+    <div id="console">
+      <div>
+        <span id="wsStatus">Online</span> <span id="wsMsg"></span>
+        <button id="commitButton" onclick="commitOnClick()">Commit</button>
+        <button id="compileButton" onclick="compileOnClick()">Compile</button>
+        <select id="mode" onchange="getSelectedMode(this)">
+          <option value=""></option>
+          <option value="c_cpp">C/C++</option>
+          <option value="python">Python</option>
+          <option value="ruby">Ruby</option>
+          <option value="lua">Lua</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="editor"> </div>
+    <div id="output"></div>
+    <script type="text/javascript" src='js/editor.js'></script>
+    <script type="text/javascript" src='js/socket.js'></script>
+  </body>
+
+</html>

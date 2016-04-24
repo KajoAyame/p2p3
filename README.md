@@ -19,3 +19,9 @@ Use Cargo to install racer (an auto-complete program for rust) by running "cargo
 Download and extract the rust 1.8 source somewhere. In the racer settings you need to say where the racer executable is and where the rust source root directory is. On windows the racer executable should be in "%USER_HOME%\.cargo\bin\racer.exe", and on unix-like systems it will be "/usr/local/bin/racer". It will also let you know where racer is after cargo finishes installing it.
 
 If we all follow the above we should have a common set of tools to reason about when communicating. Also, it should be more convenient than plain-text editing.
+
+## Run the UI ##
+* Install npm. The best way to install npm is to install node. Download the latest version from: https://nodejs.org/en/
+* Update npm ```sudo npm install npm -g```
+* Go to ../front-end and ```npm install```
+* Open ../front-end/index.html in browser.

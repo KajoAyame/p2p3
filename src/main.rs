@@ -1,373 +1,214 @@
-extern crate curl;
+#![allow(dead_code,unused_variables,unused_imports)]
+
 extern crate crust;
+extern crate time;
+extern crate git2;
 #[macro_use]
-extern crate maidsafe_utilities; // macro unwrap!()
-extern crate p2p3;
+extern crate maidsafe_utilities;
 extern crate rustc_serialize;
 extern crate docopt;
-extern crate service_discovery;
-extern crate bincode;
+extern crate rand;
+extern crate getopts;
+extern crate ws;
+extern crate url;
 
-use std::sync::mpsc::channel;
+mod commit;
+mod compile;
+mod logger;
+pub mod network;
+mod permission;
+pub mod storage;
+mod ui;
+mod woot;
+mod utils;
+mod async_queue;
+
+use std::{thread,env};
+use getopts::Options;
+use storage::storage_helper::GitAccess;
+use woot::static_site::site_singleton;
+use woot::operation_thread::run;
+use permission::permissions_handler::get_permission_level;
+use permission::permissions_handler::PermissionLevel;
+use compile::{CompileMode, run_code};
+use ui::{UiHandler, Command, FnCommand, open_url, static_ui_handler};
+use utils::p2p3_globals;
+use std::io::stdin;
+use std::fs::File;
 use std::io::prelude::*;
-use rustc_serialize::json;
-use std::io;
-use crust::{Service, ConnectionInfoResult, StaticContactInfo};
-use std::sync::{Arc, Mutex};
-use p2p3::network::network_manager::Network;
-use p2p3::network::network_manager::handle_new_peer;
-use p2p3::network::cmd_parser;
-use p2p3::network::cmd_parser::UserCommand;
-use p2p3::network::cmd_parser::parse_user_command;
-use p2p3::network::message::{Message, Kind};
-use p2p3::network::msg_passer::MsgPasser;
-use p2p3::network::bootstrap_handler::BootstrapHandler;
-use p2p3::storage::storage_helper::GitAccess;
-use std::thread;
-use std::str::FromStr;
-use bincode::rustc_serialize::{encode, decode}; // Use for encode and decode
-use rustc_serialize::json::Json;
+use std::path::Path;
 
+fn print_usage(program: &str, opts: Options) {
+    let brief = format!("Usage: {} FILE [options]", program);
+    print!("{}", opts.usage(&brief));
+}
 
-pub fn main() {
-    /*
-     *  Bootstrap
-     */
+fn main() {
+    let args: Vec<String> = env::args().collect();
+    let program = args[0].clone();
 
-    let git = GitAccess::new("https://github.com/KajoAyame/p2p3_test.git", "temp", "zhou.xinghao.1991@gmail.com", "123456abc");
+    let mut opts = Options::new();
+    opts.optopt("u", "", "URL to the git repo to connect to", "URL");
+    opts.optopt("n", "", "Username", "Username");
+    opts.optopt("p", "", "Password", "Password");
+    opts.optopt("s", "", "Site id", "SiteId");
+    opts.optopt("f", "", "File path to clone the git repo", "FilePath");
+    opts.optopt("d", "port", "Port number", "PortNumber");
+    opts.optflag("h", "help", "print this help menu");
+    let matches = match opts.parse(&args[1..]) {
+        Ok(m) => { m }
+        Err(f) => { panic!(f.to_string()) }
+    };
+    if matches.opt_present("h") {
+        print_usage(&program, opts);
+        return;
+    };
+    let git_url = matches.opt_str("u").unwrap();
+    let git_username = matches.opt_str("n").unwrap();
+    let git_password = matches.opt_str("p").unwrap();
+    let site_id_str = matches.opt_str("s").unwrap();
+    let site_id = site_id_str.parse::<u32>().unwrap();
+    let port = matches.opt_str("d").unwrap();
+    let port_number = port.parse::<u16>().unwrap();
+    let local_path = matches.opt_str("f").unwrap();
+    let p = env::current_dir().unwrap();
+    let p2p3_url = format!("file://{}/front-end/index.html",p.display());
+    let file_path = "c_code.c";
+    let git_access = GitAccess::new(git_url.clone(), local_path.clone(), file_path.to_string().clone(), git_username.clone(), git_password.clone());
 
-    match git.clone() {
-        Ok(()) => (),
-        Err(e) => {
-            println!("clone error: {}", e);
-        }
+    {
+        let globals = p2p3_globals().inner.clone();
+        let mut values = globals.lock().unwrap();
+        values.init(site_id, port_number, p2p3_url.clone(), git_access.clone());
     }
-    let mut boot = BootstrapHandler::bootstrap_load("temp/file1.p2p3");
 
-     // Construct Service and start listening
-     let (channel_sender, channel_receiver) = channel();
-     let (category_tx, category_rx) = channel();
+    if matches.free.len() > 0 {
+        print_usage(&program, opts);
+        return;
+    };
+    let static_site = site_singleton(site_id);
+    match git_access.clone_repo() {
+        Ok(()) => {},
+        Err(e) => {
+            println!("The folder already exits");
+        },
+    };
 
- //    let (bs_sender, bs_receiver) = channel();
-     let crust_event_category =
-         ::maidsafe_utilities::event_sender::MaidSafeEventCategory::Crust;
-     let event_sender =
-         ::maidsafe_utilities::event_sender::MaidSafeObserver::new(channel_sender,
-                                                                   crust_event_category,
-                                                                   category_tx);
+    let permission_level = get_permission_level(&git_access);
+    match permission_level {
+        PermissionLevel::Editor => println!("The user is an editor"),
+        PermissionLevel::Viewer => println!("The user is a viewer"),
+    };
+    let operation_thread = thread::spawn(move || {
+        run(site_id);
+    });
+    let file_name = &(local_path+file_path);
+    {
+        let initial_file_content = read_file(file_name);
+        let site_clone = static_site.inner.clone();
+        let mut site = site_clone.lock().unwrap();
+        site.parse_given_string(&initial_file_content);
+    }
 
-     /* If this file name is "file_name.rs",
-      * it will read the config file named "file_name.crust.config".
-      */
-    let config = unwrap_result!(::crust::read_config_file()); // ".crust.config"
+    let static_ui = static_ui_handler(port_number, p2p3_url.clone());
+    println!("Called Static UI Handler");
+    fn recieve_commands() -> FnCommand {
+        Box::new(|comm| {
+            let command = comm.clone();
+            match command {
+                Command::Compile => {
+                    let globals = p2p3_globals().inner.clone();
+                    let values = globals.lock().unwrap();
+                    let site_id = values.get_site_id();
+                    let site_clone = site_singleton(site_id).inner.clone();
+                    let mut site = site_clone.lock().unwrap();
+                    let ui_clone = static_ui_handler(values.get_port(), values.get_url()).inner.clone();
+                    let ui = ui_clone.lock().unwrap();
+                    match run_code(values.get_compile_mode(), &site.content()) {
+                        Ok(o) => ui.send_command(Command::Output(o)),
+                        Err(e) => println!("error {}", e),
+                    };
+                },
+                Command::InsertChar(position, character) => {
+                    println!("Received {} {}", position, character);
+                    let globals = p2p3_globals().inner.clone();
+                    let values = globals.lock().unwrap();
+                    let site_clone = site_singleton(values.get_site_id()).inner.clone();
+                    let mut site = site_clone.lock().unwrap();
+                    site.generate_insert(position, character, true);
+                    println!("Site content {}", site.content());
+                },
+                Command::DeleteChar(position) => {
+                    println!("Received {}", position);
+                    let globals = p2p3_globals().inner.clone();
+                    let values = globals.lock().unwrap();
+                    let site_clone = site_singleton(values.get_site_id()).inner.clone();
+                    let mut site = site_clone.lock().unwrap();
+                    site.generate_del(position);
+                    println!("Site content {}", site.content());
+                },
+                Command::Commit => {
+                    let globals = p2p3_globals().inner.clone();
+                    let values = globals.lock().unwrap();
+                    let ga = values.get_git_access();
+                    ga.commit_path("Commit message").unwrap();
+                    ga.push().unwrap();
+                },
+                Command::InsertString(position, content) => {
 
-    let mut service = unwrap_result!(Service::with_config(event_sender, &config));
-    unwrap_result!(service.start_listening_tcp());
-    unwrap_result!(service.start_listening_utp());
-    let my_id = service.id();
+                },
+                Command::Output(results) => {
 
-    /*
-     *  Update the config file
-     */
-    // boot.update_config(git, s);
+                },
+                Command::DisableEditing(_) => {
 
-    /*
-    service.prepare_connection_info(0);
+                },
+                Command::Mode(mode) => {
+                    println!("Mode selected: {}", mode);
+                    let globals = p2p3_globals().inner.clone();
+                    let mut values = globals.lock().unwrap();
+                    values.set_compile_mode(mode.parse::<CompileMode>().unwrap());
+                },
+            }
+            Ok("".to_string())
+        })
+    };
+    println!("Created receive commands");
+    let command_func = recieve_commands();
+    {
+        let ui_inner = static_ui.inner.clone();
+        let ui = ui_inner.lock().unwrap();
 
-    match unwrap_result!(channel_receiver.recv()) {
-        crust::Event::ConnectionInfoPrepared(result) => {
-            //println!("prepared!");
-
-            let ConnectionInfoResult {
-                result_token, result } = result;
-            let info = result.unwrap();
-            let their_info = info.to_their_connection_info();
-            let info_json = unwrap_result!(json::encode(&their_info));
-            //println!("Share this info with the peer you want to connect to:");
-            //println!("{}", info_json);
-
-            //let json_obj: Json = input_data.to_json();
-            let data = Json::from_str(info_json.as_str()).unwrap();
-            let obj = data.as_object().unwrap();
-            let foo = obj.get("static_contact_info").unwrap();
-            //println!("foo = \n{}", foo);
-
-            let json_str: String = foo.to_string();
-            //println!("json_str = \n{}", json_str);
-
-            let mut info: StaticContactInfo = json::decode(&json_str).unwrap();
-            info.tcp_acceptors.remove(0);
-
-            boot.update_config(git, info);
+        ui.add_listener(command_func);
+        let mut content = String::new();
+        {
+            let site_clone = static_site.inner.clone();
+            let mut site = site_clone.lock().unwrap();
+            let mut borrowed_content = &mut content;
+            *borrowed_content = site.content();
         }
-        event => panic!("Received unexpected event: {:?}", event),
-    }*/
+        ui.send_command(Command::InsertString(0, content));
+        match permission_level {
+            PermissionLevel::Editor => {},
+            PermissionLevel::Viewer => {
+                ui.send_command(Command::DisableEditing(String::new()))
+            },
+        };
+    }
+    println!("Connection with front-end initialized.");
+    let mut x = String::new();
+    stdin().read_line(&mut x).unwrap();
+}
 
-    //println!("/////// END ///////");
-
-
-
-     // Enable listening and responding to peers searching for us.
-     service.start_service_discovery();
-
-     let service = Arc::new(Mutex::new(service));
-     let service_cloned = service.clone();
-
-     let network = Arc::new(Mutex::new(Network::new()));
-     let network2 = network.clone();
-
-     let msg_handler = Arc::new(Mutex::new(MsgPasser::new()));
-     let msg_handler2 = msg_handler.clone();
-
-     /* Start event-handling thread.
-      * This thread handles the peer events.
-      */
-     let handler = match thread::Builder::new().name("CrustNode event handler".to_string())
-                                               .spawn(move || {
-         let service = service_cloned;
-         for it in category_rx.iter() {
-             match it {
-                 ::maidsafe_utilities::event_sender::MaidSafeEventCategory::Crust => {
-                     if let Ok(event) = channel_receiver.try_recv() {
-                         match event {
-                             // Invoked when a new message is received. Passes the message.
-                             crust::Event::NewMessage(peer_id, bytes) => {
-                                 //let message_length = bytes.len();
-                                 let mut network = unwrap_result!(network2.lock());
-                                 // network.record_received(message_length);
-
-                                 let decoded_msg: Message = decode(&bytes[..]).unwrap();
-                                 let msg = decoded_msg.get_msg();
-
-                                 /*
-                                  * Handle brocast message
-                                  */
-                                 match decoded_msg.get_kind() {
-                                     Kind::Broadcast => {
-                                         if decoded_msg.get_src() != my_id &&
-                                             unwrap_result!(msg_handler2.lock()).handle_broadcast(decoded_msg.get_seq_num()) {
-                                             println!("\nReceived from {:?} message: {:?}",
-                                                      peer_id, msg);
-
-                                             for (_, peer_id) in network.nodes.iter_mut() {
-                                                 unwrap_result!(unwrap_result!(service.lock()).send(peer_id, bytes.clone()));
-                                             }
-
-
-                                         }
-                                     }
-
-                                     Kind::Nomal => {
-                                         println!("\nReceived from {:?} message: {:?}",
-                                                  peer_id, msg);
-                                     }
-                                 }
-                             },
-                             // Invoked as a result to the call of Service::prepare_contact_info.
-                             crust::Event::ConnectionInfoPrepared(result) => {
-                                 let ConnectionInfoResult {
-                                     result_token, result } = result;
-                                 let info = match result {
-                                     Ok(i) => i,
-                                     Err(e) => {
-                                         println!("Failed to prepare connection info\ncause: {}", e);
-                                         continue;
-                                     }
-                                 };
-                                 println!("Prepared connection info with id {}", result_token);
-                                 let their_info = info.to_their_connection_info();
-                                 let info_json = unwrap_result!(json::encode(&their_info));
-                                //
-                                let data = Json::from_str(info_json.as_str()).unwrap();
-                                let obj = data.as_object().unwrap();
-                                let foo = obj.get("static_contact_info").unwrap();
-                                //println!("foo = \n{}", foo);
-
-                                let json_str: String = foo.to_string();
-                                //println!("json_str = \n{}", json_str);
-
-                                let mut info: StaticContactInfo = json::decode(&json_str).unwrap();
-                                info.tcp_acceptors.remove(0);
-
-                                boot.update_config(&git, "file1.p2p3", info);
-                                 //
-                                 /*
-                                 println!("Share this info with the peer you want to connect to:");
-                                 println!("{}", info_json);
-                                 let mut network = unwrap_result!(network2.lock());
-                                 if let Some(_) = network.our_connection_infos.insert(result_token, info) {
-                                     panic!("Got the same result_token twice!");
-                                 };*/
-                             },
-                             // Invoked when we get a bootstrap connection to a new peer.
-                             crust::Event::BootstrapConnect(peer_id) => {
-                                 println!("\nBootstrapConnect with peer {:?}", peer_id);
-                                 handle_new_peer(&unwrap_result!(service.lock()), network2.clone(), peer_id);
-                                 //let peer_index = handle_new_peer(&unwrap_result!(service.lock()), network2.clone(), peer_id);
-                                 //let _ = bs_sender.send(peer_index);
-                             },
-                             // Invoked when a bootstrap peer connects to us.
-                             crust::Event::BootstrapAccept(peer_id) => {
-                                 println!("\nBootstrapAccept with peer {:?}", peer_id);
-                                 handle_new_peer(&unwrap_result!(service.lock()), network2.clone(), peer_id);
-                                 //let peer_index = handle_new_peer(&unwrap_result!(service.lock()), network2.clone(), peer_id);
-                                 //let _ = bs_sender.send(peer_index);
-                             },
-                             // Invoked when a connection to a new peer is established.
-                             crust::Event::NewPeer(Ok(()), peer_id) => {
-                                 println!("\nConnected to peer {:?}", peer_id);
-                                 let _ = handle_new_peer(&unwrap_result!(service.lock()), network2.clone(), peer_id);
-                             }
-                             // Invoked when a peer is lost.
-                             crust::Event::LostPeer(peer_id) => {
-                                 println!("\nLost connection to peer {:?}",
-                                          peer_id);
-                                 let mut index = None;
-                                 {
-                                     let network = unwrap_result!(network2.lock());
-                                     for (i, id) in network.nodes.iter() {
-                                         if id == &peer_id {
-                                             index = Some(*i);
-                                             break;
-                                         }
-                                     }
-                                 }
-                                 let mut network = unwrap_result!(network2.lock());
-                                 if let Some(index) = index {
-                                     let _ = unwrap_option!(network.nodes.remove(&index), "index should definitely be a key in this map");
-                                 };
-                                 network.print_connected_nodes(&unwrap_result!(service.lock()));
-                             }
-                             e => {
-                                 println!("\nReceived event {:?} (not handled)", e);
-                             }
-                         }
-
-                     } else {
-                         break;
-                     }
-                 },
-                 _ => unreachable!("This category should not have been fired - {:?}", it),
-             }
-         }
-     }) {
-         Ok(join_handle) => join_handle,
-         Err(e) => {
-             println!("Failed to start event-handling thread: {}", e);
-             std::process::exit(5);
-         },
-     };
-
-     unwrap_result!(service.lock()).prepare_connection_info(0);
-     cmd_parser::print_usage();
- //    println!("Debug string: 123");
-
-     /*
-      * Main thread handles the user input command line.
-      */
-     loop {
-         use std::io::Write; // For flush().
-
-         print!("> ");
-         assert!(io::stdout().flush().is_ok());
-
-         // Get the command line from user input
-         let mut command = String::new();
-         assert!(io::stdin().read_line(&mut command).is_ok());
-
-
-         let cmd = match parse_user_command(command) {
-             Some(cmd) => cmd,
-             None => continue,
-         };
-
-         match cmd {
-             UserCommand::PrepareConnectionInfo => {
-                 let mut network = unwrap_result!(network.lock());
-                 let token = network.next_connection_info_index();
-                 println!("token = {}", token);
-                 unwrap_result!(service.lock()).prepare_connection_info(token);
-             }
-             UserCommand::Connect(our_info_index, their_info) => {
-                 let mut network = unwrap_result!(network.lock());
-                 let our_info_index = match u32::from_str(&our_info_index) {
-                     Ok(info) => info,
-                     Err(e) => {
-                         println!("Invalid connection info index: {}", e);
-                         continue;
-                     },
-                 };
-                 let our_info = match network.our_connection_infos.remove(&our_info_index) {
-                     Some(info) => info,
-                     None => {
-                         println!("Invalid connection info index");
-                         continue;
-                     },
-                 };
-                 let their_info = match json::decode(&their_info) {
-                     Ok(info) => info,
-                     Err(e) => {
-                         println!("Error decoding their connection info");
-                         println!("{}", e);
-                         continue;
-                     },
-                 };
-                 unwrap_result!(service.lock()).connect(our_info, their_info);
-             }
-             UserCommand::Send(peer_index, message) => {
-                 let network = unwrap_result!(network.lock());
-
-                 let msg = Message::new(my_id, message);
-                 let bytes = encode(&msg, bincode::SizeLimit::Infinite).unwrap();
-
-                 match network.get_peer_id(peer_index) {
-                     Some(ref mut peer_id) => {
-                         unwrap_result!(unwrap_result!(service.lock()).send(peer_id, bytes));
-                     }
-                     None => println!("Invalid connection #"),
-                 }
-             }
-             UserCommand::SendAll(message) => {
-                 let mut network = unwrap_result!(network.lock());
-                 let msg = Message::new(my_id, message);
-                 let bytes = encode(&msg, bincode::SizeLimit::Infinite).unwrap();
-                 for (_, peer_id) in network.nodes.iter_mut() {
-                     unwrap_result!(unwrap_result!(service.lock()).send(peer_id, bytes.clone()));
-                 }
-             }
-             UserCommand::List => {
-                 let network = unwrap_result!(network.lock());
-                 network.print_connected_nodes(&unwrap_result!(service.lock()));
-             }
-             UserCommand::Broadcast(message) => {
-                 let mut network = unwrap_result!(network.lock());
-                 let mut msg = Message::new_with_kind(Kind::Broadcast, my_id, message);
-                 msg.set_seq_num(unwrap_result!(msg_handler.lock()).get_seq_num());
-                 let bytes = encode(&msg, bincode::SizeLimit::Infinite).unwrap();
-
-                 for (_, peer_id) in network.nodes.iter_mut() {
-                     unwrap_result!(unwrap_result!(service.lock()).send(peer_id, bytes.clone()));
-                 }
-                 unwrap_result!(msg_handler.lock()).inc_seq();
-             }
-             UserCommand::Test => {
-                 println!("my id is: {}", unwrap_result!(service.lock()).id());
-             }
-             /*
-             UserCommand::Clean => {
-                 let mut network = network.lock().unwrap();
-                 network.remove_disconnected_nodes();
-                 network.print_connected_nodes();
-             }
-             */
-             UserCommand::Stop => {
-                 break;
-             }
-         }
-
-     }
-
-     drop(service);
-     assert!(handler.join().is_ok());
-
+fn read_file(url: &str) -> String {
+    let path = Path::new(url);
+    let mut file = match File::open(&path) {
+        Err(_) => panic!("could not open {}", url),
+        Ok(file) => file,
+    };
+    let mut s = String::new();
+    match file.read_to_string(&mut s) {
+        Err(_) => panic!("Could not read"),
+        Ok(_) => return s,
+    }
 }

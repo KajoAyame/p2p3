@@ -1,0 +1,54 @@
+body {
+    padding: 0;
+    margin: 0;
+    font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+    font-weight: 300;
+  }
+
+  #console {
+    background-color: #dddddd;
+  }
+
+  #wsStatus {
+    margin-left: 0.9em;
+    color: #ff9000;
+  }
+
+  #wsMsg {
+    margin-left: 0.5em;
+  }
+
+  #mode {
+    float: right;
+    color: #ff9000;
+    width: 100px;
+    height: auto;
+  }
+
+  #compileButton {
+    float: right;
+    color: #ff9000;
+    width: 100px;
+    height: auto;
+  }
+
+  #commitButton {
+    float: right;
+    color: #ff9000;
+    width: 100px;
+    height: auto;
+  }
+
+  #editor {
+    position: absolute;
+    top: 3em;
+    right: 0;
+    bottom: 0;
+    left: 0;
+  }
+
+  #output {
+    background-color: #dddddd;
+    /* overflow:scroll; */
+    height: auto;
+  }

@@ -1,0 +1,23 @@
+{
+  "name": "front-end",
+  "version": "1.0.0",
+  "description": "Front-end package for P2P3",
+  "author": "",
+  "scripts": {
+    "start": "npm run lite",
+    "lite": "lite-server"
+  }, 
+  "license": "ISC",
+  "dependencies": {
+    "angular2": "2.0.0-beta.13",
+    "es6-shim": "^0.35.0",
+    "reflect-metadata": "0.1.2",
+    "rxjs": "5.0.0-beta.2",
+    "zone.js": "0.6.6",
+    "ace-builds": "*"
+  },
+  "devDependencies": {
+    "concurrently": "^2.0.0",
+    "lite-server": "^2.1.0"
+  }
+}
