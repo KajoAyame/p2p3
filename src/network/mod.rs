@@ -318,7 +318,6 @@ impl MessagePasser {
                 self.broadcast_bootstrap(msg.clone());
 
                 let my_info = unwrap_result!(self.my_info.lock());
-
                 let my_info_message = Message{
                     source: self.get_id(),
                     message: my_info.clone(),
@@ -403,6 +402,8 @@ impl MessagePasser {
                     let service = unwrap_result!(self.service.lock());
                     self.print_connected_nodes(&service);
                 }
+
+                let my_info = unwrap_result!(self.my_info.lock());
                 let my_info_message = Message{
                     source: self.get_id(),
                     message: my_info.clone(),
