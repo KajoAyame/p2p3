@@ -205,7 +205,7 @@ impl MessagePasser {
                 let service = unwrap_result!(self.service.lock());
                 service.connect(our_info, their_info);
                 println!("connect!!");
-                //self.prepare_connection_info();
+                self.prepare_connection_info();
             },
             Entry::Vacant(_) => {
                 println!("No connection info prepared!");
