@@ -15,6 +15,7 @@ use p2p3::network::MessagePasserT;
 use p2p3::network::bootstrap::BootstrapHandler;
 use p2p3::storage::storage_helper::GitAccess;
 use std::str::FromStr;
+use std::fs;
 
 fn main() {
 
@@ -25,6 +26,7 @@ fn main() {
     let username: String = "zhou.xinghao.1991@gmail.com".to_string();
     let password: String = "123456abc".to_string();
 
+    fs::remove_dir_all("temp/");
 
     let git = GitAccess::new(repo_url, local_url, file_path, username, password);
     match git.clone_repo() {

@@ -48,6 +48,7 @@ pub trait MessagePasserT{
     fn next_seq_num(&self) -> u32;
     fn get_id(&self) -> PeerId;
     fn peers(&self) -> Vec<PeerId>;
+    fn connected_peers(&self) -> Arc<Mutex<Vec<PeerId>>>;
 
     fn broadcast(&self, msg: String) -> Result<(), String>{
         let msg = Message{
@@ -62,10 +63,18 @@ pub trait MessagePasserT{
     }
 
     fn broadcast_bootstrap(&self, broadcast_message: Message) -> Result<(), String>{
+        let nodes = self.connected_peers();
+        let lock_nodes = unwrap_result!(nodes.lock());
+        let iter = lock_nodes.iter();
+        for peer in iter {
+            println!("send to peer {}", peer);
+            unwrap_result!(self.send_msg(*peer, broadcast_message.clone()));
+        }
+        /*
         for peer in self.peers(){
             println!("send to peer {}", peer);
             unwrap_result!(self.send_msg(peer, broadcast_message.clone()));
-        }
+        }*/
         Ok(())
     }
 
@@ -92,6 +101,8 @@ pub struct MessagePasser{
     conn_infos: Am<HashMap<u32,OurConnectionInfo>>,
     their_infos: Am<HashMap<PeerId, TheirConnectionInfo>>,
     my_info: Am<String>,
+    info_map: Am<HashMap<PeerId, Vec<PeerId>>>,
+    nodes: Am<Vec<PeerId>>,
 }
 
 #[derive(Clone,Debug)]
@@ -128,7 +139,9 @@ impl MessagePasser {
             conn_token: Arc::new(Mutex::new(0)),
             conn_infos: Arc::new(Mutex::new(HashMap::new())),
             their_infos: Arc::new(Mutex::new(HashMap::new())),
-            my_info: Arc::new(Mutex::new(String::new())),};
+            my_info: Arc::new(Mutex::new(String::new())),
+            info_map: Arc::new(Mutex::new(HashMap::new())),
+            nodes: Arc::new(Mutex::new(Vec::new())),};
 
         let handler = {
             let mp = mp.clone();
@@ -173,14 +186,19 @@ impl MessagePasser {
     }
 
     pub fn connect(&self, i:u32, their_info:TheirConnectionInfo){
-
+        println!("Prepare");
         self.prepare_connection_info();
-        self.wait_conn_info(0);
+        //println!("Wait");
+        //self.wait_conn_info(0);
+        //println!("Wait Finish");
         let mut infos = unwrap_result!(self.conn_infos.lock());
         println!("<<< After: len =  {} >>>", infos.len());
+
+
         match infos.entry(i){
             Entry::Occupied(oe)=>{
                 let our_info = oe.remove();
+                //let our_info = oe.get();
                 let service = unwrap_result!(self.service.lock());
                 service.connect(our_info, their_info);
                 println!("connect!!");
@@ -262,20 +280,35 @@ impl MessagePasser {
             }
             MsgKind::Bootstrap => {
                 println!("---------Received MsgKind::Bootstrap from [{}]", peer_id);
-                println!("-------get from [{}]:\nsrc:{}\n {}", peer_id, msg.source, msg.message);
+                println!("-------get from [{}]: src:{}", peer_id, msg.source);
                 if msg.source == self.my_id {
                     println!("received self");
                     return;
                 }
 
                 let mut their_infos = unwrap_result!(self.their_infos.lock());
-                if their_infos.contains_key(&msg.source) {
-                    return;
+                if !their_infos.contains_key(&msg.source) {
+                    let their_info:TheirConnectionInfo = json::decode(&msg.message).unwrap();
+                    their_infos.insert(msg.source, their_info);
                 }
-                let their_info:TheirConnectionInfo = json::decode(&msg.message).unwrap();
-                their_infos.insert(msg.source, their_info);
+
+                {
+                    let mut peer_seqs = unwrap_result!(self.peer_seqs.lock());
+                    let mut rec_seq = peer_seqs.entry(msg.source).or_insert(0);
+                    if *rec_seq >= msg.seq_num{
+                        // I already got it and forwarded it
+                        return;
+                    }
+                    //Update the most recent seq_num
+                    *rec_seq = msg.seq_num;
+                }
+                //let mut info_map = unwrap_result!(self.info_map.lock());
+                //let mut set = info_map.get_mut(&msg.source);
+                //if (set.contains())
+                //let their_info:TheirConnectionInfo = json::decode(&msg.message).unwrap();
+                //their_infos.insert(msg.source, their_info);
                 println!("&&&&&&&&&&&&&&&&&&&&&&&&&");
-                println!("-------get from [{}]:\nsrc:{}\n {}", peer_id, msg.source, msg.message);
+                println!("-------get from [{}]: src:{}", peer_id, msg.source);
                 println!("&&&&&&&&&&&&&&&&&&&&&&&&&");
                 /*
                  *  Connect
@@ -290,7 +323,7 @@ impl MessagePasser {
                     source: self.get_id(),
                     message: my_info.clone(),
                     kind: MsgKind::Bootstrap,
-                    seq_num: 0,
+                    seq_num: self.next_seq_num(),
                 };
                 let their_conn: TheirConnectionInfo = json::decode(&msg.message).unwrap();
                 /*
@@ -300,11 +333,25 @@ impl MessagePasser {
                 */
                 //self.broadcast_bootstrap(broadcast_message);
                 //self.broadcast_bootstrap(msg.clone());
-                if !self.peers().contains(&msg.source) {
+                println!("####### Trying to connect [{}] #######", msg.source);
+                let nodes = self.connected_peers();
+                let lock_nodes = unwrap_result!(nodes.lock());
+                for id in lock_nodes.iter() {
+                    print!("{}\t", id);
+                }
+                if !lock_nodes.contains(&msg.source) {
+                    println!("!!!!!!! Connect !!!!!!!");
                     self.connect(0, their_conn);
                 } else {
                     println!("Already connected");
                 }
+                /*
+                if !self.peers().contains(&msg.source) {
+                    println!("!!!!!!! Connect !!!!!!!");
+                    self.connect(0, their_conn);
+                } else {
+                    println!("Already connected");
+                }*/
             }
         }
     }
@@ -345,6 +392,10 @@ impl MessagePasser {
             },
             Event::BootstrapConnect(peer_id) => {
                 {
+                    let mut nodes = unwrap_result!(self.nodes.lock());
+                    nodes.push(peer_id);
+                }
+                {
                     unwrap_result!(self.peer_seqs.lock()).insert(peer_id, 0);
                 }
                 println!("received BootstrapConnect with peerid: {}", peer_id);
@@ -354,6 +405,10 @@ impl MessagePasser {
                 }
             },
             Event::BootstrapAccept(peer_id) => {
+                {
+                    let mut nodes = unwrap_result!(self.nodes.lock());
+                    nodes.push(peer_id);
+                }
                 {
                     unwrap_result!(self.peer_seqs.lock()).insert(peer_id, 0);
                 }
@@ -374,11 +429,10 @@ impl MessagePasser {
                         source: *id,
                         message: info_str,
                         kind: MsgKind::Bootstrap,
-                        seq_num: 0,
+                        seq_num: self.next_seq_num(),
                     };
                     self.send_msg(peer_id, bootstrap_message);
                 }
-                println!("5");
             },
             Event::BootstrapFinished =>{
                 println!("Receieved BootstrapFinished");
@@ -443,7 +497,7 @@ impl MessagePasser {
             source: self.get_id(),
             message: my_info,
             kind: MsgKind::Bootstrap,
-            seq_num: 0,
+            seq_num: self.next_seq_num(),
          };
         self.broadcast_bootstrap(broadcast_message);
     }
@@ -478,6 +532,9 @@ impl MessagePasserT for MessagePasser {
         Vec::from_iter(peer_seqs.keys().map(|k| *k))
     }
 
+    fn connected_peers(&self) -> Arc<Mutex<Vec<PeerId>>>{
+        self.nodes.clone()
+    }
     fn next_seq_num(&self) -> u32{
         let mut seq_num = unwrap_result!(self.seq_num.lock());
         *seq_num+=1;
