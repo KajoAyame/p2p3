@@ -189,7 +189,7 @@ impl MessagePasser {
     }
 
     pub fn connect(&self, i:u32, their_info:TheirConnectionInfo){
-        //self.prepare_connection_info();
+        self.prepare_connection_info();
         //println!("Wait");
         //let conn_token = unwrap_result!(self.conn_token.lock());
         //self.wait_conn_info(*conn_token - 1);
