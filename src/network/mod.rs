@@ -294,6 +294,12 @@ impl MessagePasser {
                     return;
                 }
 
+                let mut their_infos = unwrap_result!(self.their_infos.lock());
+                if !their_infos.contains_key(&msg.source) {
+                    let their_info:TheirConnectionInfo = json::decode(&msg.message).unwrap();
+                    their_infos.insert(msg.source, their_info);
+                }
+
                 {
                     let mut peer_seqs = unwrap_result!(self.peer_seqs.lock());
                     let mut rec_seq = peer_seqs.entry(msg.source).or_insert(0);
@@ -463,7 +469,7 @@ impl MessagePasser {
 
                 // Tell the new peer all the nodes it knows.
                 let their_infos = unwrap_result!(self.their_infos.lock());
-                println!("Sending {} info", their_infos.len());
+                println!("Sending {} info to [{}]", their_infos.len(), peer_id);
                 let iter = their_infos.iter();
                 for (id, info) in iter {
                     let info_str = json::encode(&info).unwrap();
