@@ -193,7 +193,7 @@ impl MessagePasser {
         self.prepare_connection_info();
         println!("Wait");
         let conn_token = unwrap_result!(self.conn_token.lock());
-        self.wait_conn_info(*conn_token);
+        self.wait_conn_info(*conn_token - 1);
         println!("Wait Finish");
         let mut infos = unwrap_result!(self.conn_infos.lock());
         println!("<<< After: len =  {} >>>", infos.len());
