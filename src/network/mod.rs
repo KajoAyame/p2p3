@@ -408,7 +408,7 @@ impl MessagePasser {
                 }
                 if !lock_nodes.contains(&msg.source) {
                     println!("!!!!!!! New Peer Connect !!!!!!!");
-                    tok = self.prepare_connection_info();
+                    let tok = self.prepare_connection_info();
                     //println!("Wait");
                     //self.wait_conn_info(tok - 1);
                     //println!("Wait Finish");
