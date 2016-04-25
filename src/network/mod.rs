@@ -196,7 +196,7 @@ impl MessagePasser {
         //println!("Wait Finish");
         let mut infos = unwrap_result!(self.conn_infos.lock());
         println!("<<< After: len =  {} >>>", infos.len());
-        if (infos.len() == 0) {
+        if infos.len() == 0 {
             println!("Prepare");
             self.prepare_connection_info();
             println!("<<< After preparing: len =  {} >>>", infos.len());
@@ -435,10 +435,10 @@ impl MessagePasser {
                     }
                 };
                 let their_info = info.to_their_connection_info();
-
-                let mut conn_infos = unwrap_result!(self.conn_infos.lock());
-                conn_infos.insert(result_token, info);
-
+                {
+                    let mut conn_infos = unwrap_result!(self.conn_infos.lock());
+                    conn_infos.insert(result_token, info);
+                }
                 // My info.
                 let info_json = unwrap_result!(json::encode(&their_info));
                 let mut my_info = unwrap_result!(self.my_info.lock());
