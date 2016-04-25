@@ -527,12 +527,13 @@ impl MessagePasser {
                 //println!("Wait Finish");
             },
             Event::LostPeer(peer_id) => {
+                /* TODO: Remove nodes.
                 let nodes = unwrap_result!(self.nodes.lock());
-                for x in 0..nodex.len() {
+                for x in 0..node.len() {
                     if nodes.get(x).unwrap() == peer_id {
                         nodes.remove(x);
                     }
-                }
+                }*/
                 unwrap_result!(self.peer_seqs.lock()).remove(&peer_id);
                 println!("peer disconnected {}", peer_id);
             },
