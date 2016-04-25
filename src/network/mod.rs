@@ -278,6 +278,7 @@ impl MessagePasser {
                 }
             }
             MsgKind::BootstrapRequest => {
+                println("1111111 BootstrapRequest 1111111");
                 let peer_message = Message{
                     source: msg.source,
                     message: msg.message,
@@ -287,6 +288,7 @@ impl MessagePasser {
                 self.broadcast_bootstrap(peer_message);
             }
             MsgKind::BootstrapResponse => {
+                println!("3333333 BootstrapResponse 3333333");
                 if msg.source == self.my_id {
                     println!("received self");
                     return;
@@ -320,6 +322,7 @@ impl MessagePasser {
                 }
             }
             MsgKind::BootstrapNewPeer => {
+                println!("2222222 BootstrapNewPeer 2222222");
                 /*
                 if msg.source == self.my_id {
                     println!("received self");
@@ -530,13 +533,10 @@ impl MessagePasser {
 
 impl MessagePasserT for MessagePasser {
     fn send_msg(&self, dst:PeerId, msg:Message) -> Result<(),String>{
-        println!("11");
         let bytes = encode(&msg, bincode::SizeLimit::Infinite).unwrap();
-        println!("22");
         {
             unwrap_result!(unwrap_result!(self.service.lock()).send(&dst, bytes));
         }
-        println!("33");
         Ok(())
     }
 
