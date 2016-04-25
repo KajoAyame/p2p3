@@ -323,11 +323,11 @@ impl MessagePasser {
             }
             MsgKind::BootstrapNewPeer => {
                 println!("2222222 BootstrapNewPeer 2222222 from [{}]", peer_id);
-                /*
+
                 if msg.source == self.my_id {
                     println!("received self");
                     return;
-                }*/
+                }
 
                 let mut their_infos = unwrap_result!(self.their_infos.lock());
                 if !their_infos.contains_key(&msg.source) {
@@ -355,6 +355,20 @@ impl MessagePasser {
                 };
 
                 self.broadcast_bootstrap(my_info_message);
+
+                let their_conn: TheirConnectionInfo = json::decode(&msg.message).unwrap();
+                println!("####### Trying to connect [{}] #######", msg.source);
+                let nodes = self.connected_peers();
+                let lock_nodes = unwrap_result!(nodes.lock());
+                for id in lock_nodes.iter() {
+                    print!("{}\t", id);
+                }
+                if !lock_nodes.contains(&msg.source) {
+                    println!("!!!!!!! Connect !!!!!!!");
+                    self.connect(0, their_conn);
+                } else {
+                    println!("Already connected");
+                }
             }
 
             MsgKind::Bootstrap => {
