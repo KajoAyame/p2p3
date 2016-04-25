@@ -529,7 +529,7 @@ impl MessagePasser {
             Event::LostPeer(peer_id) => {
                 let nodes = unwrap_result!(self.nodes.lock());
                 for x in 0..nodex.len() {
-                    if nodes.get(x) == peer_id {
+                    if nodes.get(x).unwrap() == peer_id {
                         nodes.remove(x);
                     }
                 }
