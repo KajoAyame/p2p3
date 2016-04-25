@@ -399,6 +399,7 @@ impl MessagePasser {
             }
 
             MsgKind::Bootstrap => {
+                self.prepare_connection_info();
                 let their_conn: TheirConnectionInfo = json::decode(&msg.message).unwrap();
                 println!("####### Trying to connect [{}] #######", msg.source);
                 let nodes = self.connected_peers();
