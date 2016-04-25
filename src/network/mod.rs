@@ -399,7 +399,6 @@ impl MessagePasser {
             }
 
             MsgKind::Bootstrap => {
-                self.prepare_connection_info();
                 let their_conn: TheirConnectionInfo = json::decode(&msg.message).unwrap();
                 println!("####### Trying to connect [{}] #######", msg.source);
                 let nodes = self.connected_peers();
@@ -408,6 +407,7 @@ impl MessagePasser {
                     print!("{}\t", id);
                 }
                 if !lock_nodes.contains(&msg.source) {
+                    self.prepare_connection_info();
                     println!("!!!!!!! New Peer Connect !!!!!!!");
                     //let tok = self.prepare_connection_info();
                     //println!("Wait");
