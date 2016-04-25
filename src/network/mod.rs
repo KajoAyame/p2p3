@@ -487,6 +487,10 @@ impl MessagePasser {
             },
             // The event happens when we use "connect" cmd.
             Event::NewPeer(Ok(()), peer_id) => {
+                {
+                    let mut nodes = unwrap_result!(self.nodes.lock());
+                    nodes.push(peer_id);
+                }
                 unwrap_result!(self.peer_seqs.lock()).insert(peer_id, 0);
                 println!("!!!!!!! peer connected {} !!!!!!!", peer_id);
                 {
