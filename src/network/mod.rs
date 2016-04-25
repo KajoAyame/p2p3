@@ -278,7 +278,7 @@ impl MessagePasser {
                 }
             }
             MsgKind::BootstrapRequest => {
-                println("1111111 BootstrapRequest 1111111");
+                println!("1111111 BootstrapRequest 1111111");
                 let peer_message = Message{
                     source: msg.source,
                     message: msg.message,
