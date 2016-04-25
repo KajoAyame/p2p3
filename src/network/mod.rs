@@ -324,7 +324,7 @@ impl MessagePasser {
                 if !lock_nodes.contains(&msg.source) {
                     println!("!!!!!!! Connect !!!!!!!");
                     let conn_token = unwrap_result!(self.conn_token.lock());
-                    self.connect(*conn_token, their_conn);
+                    self.connect(*conn_token - 1, their_conn);
                 } else {
                     println!("Already connected");
                 }
@@ -374,7 +374,7 @@ impl MessagePasser {
                 if !lock_nodes.contains(&msg.source) {
                     println!("!!!!!!! Connect !!!!!!!");
                     let conn_token = unwrap_result!(self.conn_token.lock());
-                    self.connect(*conn_token, their_conn);
+                    self.connect(*conn_token - 1, their_conn);
                 } else {
                     println!("Already connected");
                 }
@@ -391,7 +391,7 @@ impl MessagePasser {
                 if !lock_nodes.contains(&msg.source) {
                     println!("!!!!!!! Connect !!!!!!!");
                     let conn_token = unwrap_result!(self.conn_token.lock());
-                    self.connect(*conn_token, their_conn);
+                    self.connect(*conn_token - 1, their_conn);
                 } else {
                     println!("Already connected");
                 }
