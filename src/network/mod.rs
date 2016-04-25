@@ -189,7 +189,6 @@ impl MessagePasser {
     }
 
     pub fn connect(&self, i:u32, their_info:TheirConnectionInfo){
-        println!("Prepare");
         //self.prepare_connection_info();
         //println!("Wait");
         //let conn_token = unwrap_result!(self.conn_token.lock());
@@ -197,18 +196,37 @@ impl MessagePasser {
         //println!("Wait Finish");
         let mut infos = unwrap_result!(self.conn_infos.lock());
         println!("<<< After: len =  {} >>>", infos.len());
-
-        match infos.entry(i){
-            Entry::Occupied(oe)=>{
-                let our_info = oe.remove();
-                //let our_info = oe.get();
-                let service = unwrap_result!(self.service.lock());
-                service.connect(our_info, their_info);
-                println!("connect!!");
-                //self.prepare_connection_info();
-            },
-            Entry::Vacant(_) => {
-                println!("No connection info prepared!");
+        if (infos.len() == 0) {
+            println!("Prepare");
+            self.prepare_connection_info();
+            println!("<<< After preparing: len =  {} >>>", infos.len());
+            let conn_token = unwrap_result!(self.conn_token.lock());
+            match infos.entry(*conn_token - 1){
+                Entry::Occupied(oe)=>{
+                    let our_info = oe.remove();
+                    //let our_info = oe.get();
+                    let service = unwrap_result!(self.service.lock());
+                    service.connect(our_info, their_info);
+                    println!("connect!!");
+                    //self.prepare_connection_info();
+                },
+                Entry::Vacant(_) => {
+                    println!("No connection info prepared!");
+                }
+            }
+        } else {
+            match infos.entry(i){
+                Entry::Occupied(oe)=>{
+                    let our_info = oe.remove();
+                    //let our_info = oe.get();
+                    let service = unwrap_result!(self.service.lock());
+                    service.connect(our_info, their_info);
+                    println!("connect!!");
+                    //self.prepare_connection_info();
+                },
+                Entry::Vacant(_) => {
+                    println!("No connection info prepared!");
+                }
             }
         }
     }
