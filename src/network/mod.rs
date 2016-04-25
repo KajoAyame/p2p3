@@ -512,10 +512,9 @@ impl MessagePasser {
                     let service = unwrap_result!(self.service.lock());
                     self.print_connected_nodes(&service);
                 }
-                self.prepare_connection_info();
+                let tok = self.prepare_connection_info();
                 println!("Wait");
-                let conn_token = unwrap_result!(self.conn_token.lock());
-                self.wait_conn_info(*conn_token);
+                self.wait_conn_info(tok);
                 println!("Wait Finish");
             },
             Event::LostPeer(peer_id) => {
