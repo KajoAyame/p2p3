@@ -33,6 +33,7 @@ pub enum MsgKind {
     BootstrapRequest,
     BootstrapResponse,
     BootstrapNewPeer,
+    BootstrapNewInfo,
 }
 
 #[derive(RustcEncodable, RustcDecodable, Clone)]
@@ -276,6 +277,7 @@ impl MessagePasser {
                     MsgKind::BootstrapRequest => "BootstrapRequest",
                     MsgKind::BootstrapResponse => "BootstrapResponse",
                     MsgKind::BootstrapNewPeer => "BootstrapNewPeer",
+                    MsgKind::BootstrapNewInfo => "BootstrapNewInfo",
                 };
                 println!("message from {}: [{}] {}", peer_id, kind, decoded_msg.message);
 
@@ -414,6 +416,13 @@ impl MessagePasser {
                     println!("Already connected");
                 }
             }
+
+            MsgKind::BootstrapNewInfo => {
+                let their_conn: TheirConnectionInfo = json::decode(&msg.message).unwrap();
+
+                let mut their_infos = unwrap_result!(self.their_infos.lock());
+                their_infos.insert(msg.source, their_conn);
+            }
         }
     }
 
@@ -443,6 +452,14 @@ impl MessagePasser {
                 let info_json = unwrap_result!(json::encode(&their_info));
                 let mut my_info = unwrap_result!(self.my_info.lock());
                 *my_info = info_json.clone();
+
+                let my_info_message = Message{
+                    source: self.get_id(),
+                    message: info_json,
+                    kind: MsgKind::BootstrapNewInfo,
+                    seq_num: self.next_seq_num(),
+                };
+                self.broadcast_bootstrap(my_info_message);
             },
             Event::BootstrapConnect(peer_id) => {
                 {
