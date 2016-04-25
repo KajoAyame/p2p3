@@ -21,7 +21,7 @@ fn main() {
     // Get the four parameters from the front-end.
     let repo_url: String = "https://github.com/KajoAyame/p2p3_test.git".to_string();
     let local_url: String = "temp/".to_string();
-    let file_path: String = "file1.rs".to_string();
+    let file_path: String = "file3.rs".to_string();
     let username: String = "zhou.xinghao.1991@gmail.com".to_string();
     let password: String = "123456abc".to_string();
 
@@ -94,7 +94,12 @@ fn main() {
                 mp.broadcast(message).unwrap();
             }
             UserCommand::Test => {
-                println!("Hello");
+                let their_infos = mp.get_their_infos();
+                let their_infos = unwrap_result!(their_infos.lock());
+                for (peer, info) in their_infos.iter() {
+                    let info_str = json::encode(&info).unwrap();
+                    println!("[{}] : {}", peer, info_str);
+                }
             }
             /*
             UserCommand::Clean => {

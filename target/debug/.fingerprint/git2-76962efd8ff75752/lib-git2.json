@@ -1,1 +1,0 @@
-{"rustc":712532066948670400,"target":11910753266161833060,"profile":13023446655302672390,"local":{"variant":"Precalculated","fields":["0.4.2"]},"features":"Some([\"default\", \"https\", \"libgit2-sys\", \"ssh\"])","deps":[["bitflags v0.1.1",9011525714632211944],["libc v0.2.10",12597449472889413970],["libgit2-sys v0.4.2",13680890697561807515],["url v0.5.9",3742517962707786608]]}

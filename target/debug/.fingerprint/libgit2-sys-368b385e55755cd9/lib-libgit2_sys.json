@@ -1,1 +1,0 @@
-{"rustc":712532066948670400,"target":4152928699857106560,"profile":13023446655302672390,"local":{"variant":"Precalculated","fields":["0.4.2"]},"features":"Some([\"https\", \"libssh2-sys\", \"ssh\"])","deps":[["libc v0.2.10",12597449472889413970],["libssh2-sys v0.1.37",15243331396165032504],["libz-sys v1.0.2",13852336137318067362]]}

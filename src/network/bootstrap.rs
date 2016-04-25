@@ -103,8 +103,22 @@ impl BootstrapHandler {
     pub fn update_config(&self, mp: MessagePasser) {
         let tok = mp.prepare_connection_info();
         let their_info = mp.wait_conn_info(tok);
+
+        // Silly way to clone their_info.
+        let their_info_str = json::encode(&their_info).unwrap();
+        let their_info_str_clone = their_info_str.clone();
+        let their_info_clone: TheirConnectionInfo = json::decode(&their_info_str_clone.clone()).unwrap();
+
         let mut info = BootstrapHandler::static_info_from_their(their_info);
         info.tcp_acceptors.remove(0);
+
+        // Insert self info HERE
+        let their_infos = mp.get_their_infos();
+        let mut their_infos = unwrap_result!(their_infos.lock());
+        let id = mp.get_id();
+        their_infos.insert(id, their_info_clone);
+
+        mp.bootstrap_start(their_info_str_clone);
 
         /*
          *  Because the crust can only connect to the first TCP acceptor in the config file,

@@ -63,6 +63,7 @@ pub trait MessagePasserT{
 
     fn broadcast_bootstrap(&self, broadcast_message: Message) -> Result<(), String>{
         for peer in self.peers(){
+            println!("send to peer {}", peer);
             unwrap_result!(self.send_msg(peer, broadcast_message.clone()));
         }
         Ok(())
@@ -153,7 +154,9 @@ impl MessagePasser {
 
     pub fn prepare_connection_info(&self) -> u32{
         let mut token = unwrap_result!(self.conn_token.lock());
-        unwrap_result!(self.service.lock()).prepare_connection_info(*token);
+        {
+            unwrap_result!(self.service.lock()).prepare_connection_info(*token);
+        }
         let ret = *token;
         *token+=1;
         ret
@@ -172,6 +175,7 @@ impl MessagePasser {
     pub fn connect(&self, i:u32, their_info:TheirConnectionInfo){
 
         self.prepare_connection_info();
+        self.wait_conn_info(0);
         let mut infos = unwrap_result!(self.conn_infos.lock());
         println!("<<< After: len =  {} >>>", infos.len());
         match infos.entry(i){
@@ -189,6 +193,15 @@ impl MessagePasser {
 
     pub fn get_service(&self) -> Arc<Mutex<Service>>{
         self.service.clone()
+    }
+
+    pub fn get_their_infos(&self) -> Arc<Mutex<HashMap<PeerId, TheirConnectionInfo>>> {
+        self.their_infos.clone()
+    }
+
+    // Pub fn
+    pub fn get_id(&self) -> PeerId {
+        self.my_id
     }
 
     fn drop(&mut self){
@@ -248,7 +261,10 @@ impl MessagePasser {
                 }
             }
             MsgKind::Bootstrap => {
+                println!("---------Received MsgKind::Bootstrap from [{}]", peer_id);
+                println!("-------get from [{}]:\nsrc:{}\n {}", peer_id, msg.source, msg.message);
                 if msg.source == self.my_id {
+                    println!("received self");
                     return;
                 }
 
@@ -256,33 +272,34 @@ impl MessagePasser {
                 if their_infos.contains_key(&msg.source) {
                     return;
                 }
-
+                let their_info:TheirConnectionInfo = json::decode(&msg.message).unwrap();
+                their_infos.insert(msg.source, their_info);
                 println!("&&&&&&&&&&&&&&&&&&&&&&&&&");
                 println!("-------get from [{}]:\nsrc:{}\n {}", peer_id, msg.source, msg.message);
                 println!("&&&&&&&&&&&&&&&&&&&&&&&&&");
+                /*
+                 *  Connect
+                 */
 
-                let their_info:TheirConnectionInfo = json::decode(&msg.message).unwrap();
-                their_infos.insert(msg.source, their_info);
+                //self.broadcast_bootstrap(my_info_message);
+                self.broadcast_bootstrap(msg.clone());
 
                 let my_info = unwrap_result!(self.my_info.lock());
 
-                let broadcast_message = Message{
+                let my_info_message = Message{
                     source: self.get_id(),
                     message: my_info.clone(),
                     kind: MsgKind::Bootstrap,
                     seq_num: 0,
                 };
-
-                /*
-                 *  Connect
-                 */
                 let their_conn: TheirConnectionInfo = json::decode(&msg.message).unwrap();
                 /*
                 println!("=========================");
                 println!("src: {}\n{}", broa    dcast_message.source, broadcast_message.message);
                 println!("=========================");
                 */
-                self.broadcast_bootstrap(broadcast_message);
+                //self.broadcast_bootstrap(broadcast_message);
+                //self.broadcast_bootstrap(msg.clone());
                 if !self.peers().contains(&msg.source) {
                     self.connect(0, their_conn);
                 } else {
@@ -313,7 +330,6 @@ impl MessagePasser {
 
                 let mut conn_infos = unwrap_result!(self.conn_infos.lock());
                 conn_infos.insert(result_token, info);
-                println!(">>> len = {} <<<", conn_infos.len());
                 /*
                  *  New things.
                  */
@@ -322,34 +338,47 @@ impl MessagePasser {
                 println!("{}", json::encode(&their_info).unwrap());
                 println!("*************************");
                 */
+                println!(">>> len = {} <<<", conn_infos.len());
                 let info_json = unwrap_result!(json::encode(&their_info));
                 let mut my_info = unwrap_result!(self.my_info.lock());
                 *my_info = info_json.clone();
-                //
-
-                /*
-                 *  Broadcast my_connection_info
-                 */
-
-                 let broadcast_message = Message{
-                     source: self.get_id(),
-                     message: info_json,
-                     kind: MsgKind::Bootstrap,
-                     seq_num: 0,
-                 };
-                self.broadcast_bootstrap(broadcast_message);
             },
             Event::BootstrapConnect(peer_id) => {
-                unwrap_result!(self.peer_seqs.lock()).insert(peer_id, 0);
+                {
+                    unwrap_result!(self.peer_seqs.lock()).insert(peer_id, 0);
+                }
                 println!("received BootstrapConnect with peerid: {}", peer_id);
-                let service = unwrap_result!(self.service.lock());
-                self.print_connected_nodes(&service);
+                {
+                    let service = unwrap_result!(self.service.lock());
+                    self.print_connected_nodes(&service);
+                }
             },
             Event::BootstrapAccept(peer_id) => {
-                unwrap_result!(self.peer_seqs.lock()).insert(peer_id, 0);
+                {
+                    unwrap_result!(self.peer_seqs.lock()).insert(peer_id, 0);
+                }
                 println!("received BootstrapAccept with peerid: {}", peer_id);
-                let service = unwrap_result!(self.service.lock());
-                self.print_connected_nodes(&service);
+                {
+                    let service = unwrap_result!(self.service.lock());
+                    self.print_connected_nodes(&service);
+                }
+
+
+                // Tell the new peer all the nodes it knows.
+                let their_infos = unwrap_result!(self.their_infos.lock());
+                println!("Sending {} info", their_infos.len());
+                let iter = their_infos.iter();
+                for (id, info) in iter {
+                    let info_str = json::encode(&info).unwrap();
+                    let bootstrap_message = Message{
+                        source: *id,
+                        message: info_str,
+                        kind: MsgKind::Bootstrap,
+                        seq_num: 0,
+                    };
+                    self.send_msg(peer_id, bootstrap_message);
+                }
+                println!("5");
             },
             Event::BootstrapFinished =>{
                 println!("Receieved BootstrapFinished");
@@ -357,9 +386,27 @@ impl MessagePasser {
             // The event happens when we use "connect" cmd.
             Event::NewPeer(Ok(()), peer_id) => {
                 unwrap_result!(self.peer_seqs.lock()).insert(peer_id, 0);
-                println!("peer connected {}", peer_id);
-                let service = unwrap_result!(self.service.lock());
-                self.print_connected_nodes(&service);
+                println!("!!!!!!! peer connected {} !!!!!!!", peer_id);
+                {
+                    let service = unwrap_result!(self.service.lock());
+                    self.print_connected_nodes(&service);
+                }
+                // Tell the new peer all the nodes it knows.
+                /*
+                let their_infos = unwrap_result!(self.their_infos.lock());
+                println!("Sending {} info", their_infos.len());
+                let iter = their_infos.iter();
+
+                for (id, info) in iter {
+                    let info_str = json::encode(&info).unwrap();
+                    let bootstrap_message = Message{
+                        source: *id,
+                        message: info_str,
+                        kind: MsgKind::Bootstrap,
+                        seq_num: 0,
+                    };
+                    self.send_msg(peer_id, bootstrap_message);
+                }*/
             },
             Event::LostPeer(peer_id) => {
                 unwrap_result!(self.peer_seqs.lock()).remove(&peer_id);
@@ -385,12 +432,32 @@ impl MessagePasser {
 
         println!("");
     }
+
+    pub fn bootstrap_start(&self, my_info: String) {
+        let peers = self.peers();
+        if peers.len() == 0 {
+            return;
+        }
+        println!("Send MsgKind::Bootstrap");
+        let broadcast_message = Message{
+            source: self.get_id(),
+            message: my_info,
+            kind: MsgKind::Bootstrap,
+            seq_num: 0,
+         };
+        self.broadcast_bootstrap(broadcast_message);
+    }
 }
 
 impl MessagePasserT for MessagePasser {
     fn send_msg(&self, dst:PeerId, msg:Message) -> Result<(),String>{
+        println!("11");
         let bytes = encode(&msg, bincode::SizeLimit::Infinite).unwrap();
-        unwrap_result!(unwrap_result!(self.service.lock()).send(&dst, bytes));
+        println!("22");
+        {
+            unwrap_result!(unwrap_result!(self.service.lock()).send(&dst, bytes));
+        }
+        println!("33");
         Ok(())
     }
 
