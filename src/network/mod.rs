@@ -30,6 +30,9 @@ pub enum MsgKind {
     Normal,
     Broadcast,
     Bootstrap,
+    BootstrapRequest,
+    BootstrapResponse,
+    BootstrapNewPeer,
 }
 
 #[derive(RustcEncodable, RustcDecodable, Clone)]
@@ -232,13 +235,6 @@ impl MessagePasser {
             MsgKind::Normal =>{
                 // Add to recv_queue
                 self.recv_queue.enq(msg);
-                let decoded_msg: Message = decode(&bytes[..]).unwrap();
-                let kind = match decoded_msg.kind {
-                    MsgKind::Broadcast => "Broadcast",
-                    MsgKind::Normal => "Normal",
-                    MsgKind::Bootstrap => "Bootstrap",
-                };
-                println!("message from {}: [{}] {}", peer_id, kind, decoded_msg.message);
             },
             MsgKind::Broadcast =>{
                 if msg.source == self.my_id {
@@ -263,6 +259,9 @@ impl MessagePasser {
                     MsgKind::Broadcast => "Broadcast",
                     MsgKind::Normal => "Normal",
                     MsgKind::Bootstrap => "Bootstrap",
+                    MsgKind::BootstrapRequest => "BootstrapRequest",
+                    MsgKind::BootstrapResponse => "BootstrapResponse",
+                    MsgKind::BootstrapNewPeer => "BootstrapNewPeer",
                 };
                 println!("message from {}: [{}] {}", peer_id, kind, decoded_msg.message);
 
@@ -278,13 +277,54 @@ impl MessagePasser {
                     unwrap_result!(unwrap_result!(self.service.lock()).send(peer, bytes.clone()));
                 }
             }
-            MsgKind::Bootstrap => {
-                println!("---------Received MsgKind::Bootstrap from [{}]", peer_id);
-                println!("-------get from [{}]: src:{}", peer_id, msg.source);
+            MsgKind::BootstrapRequest => {
+                let peer_message = Message{
+                    source: msg.source,
+                    message: msg.message,
+                    kind: MsgKind::BootstrapNewPeer,
+                    seq_num: self.next_seq_num(),
+                };
+                self.broadcast_bootstrap(peer_message);
+            }
+            MsgKind::BootstrapResponse => {
                 if msg.source == self.my_id {
                     println!("received self");
                     return;
                 }
+
+                {
+                    let mut peer_seqs = unwrap_result!(self.peer_seqs.lock());
+                    let mut rec_seq = peer_seqs.entry(msg.source).or_insert(0);
+                    if *rec_seq >= msg.seq_num{
+                        // I already got it and forwarded it
+                        return;
+                    }
+                    //Update the most recent seq_num
+                    *rec_seq = msg.seq_num;
+                }
+
+                self.broadcast_bootstrap(msg.clone());
+
+                let their_conn: TheirConnectionInfo = json::decode(&msg.message).unwrap();
+                println!("####### Trying to connect [{}] #######", msg.source);
+                let nodes = self.connected_peers();
+                let lock_nodes = unwrap_result!(nodes.lock());
+                for id in lock_nodes.iter() {
+                    print!("{}\t", id);
+                }
+                if !lock_nodes.contains(&msg.source) {
+                    println!("!!!!!!! Connect !!!!!!!");
+                    self.connect(0, their_conn);
+                } else {
+                    println!("Already connected");
+                }
+            }
+            MsgKind::BootstrapNewPeer => {
+                /*
+                if msg.source == self.my_id {
+                    println!("received self");
+                    return;
+                }*/
 
                 let mut their_infos = unwrap_result!(self.their_infos.lock());
                 if !their_infos.contains_key(&msg.source) {
@@ -302,26 +342,20 @@ impl MessagePasser {
                     //Update the most recent seq_num
                     *rec_seq = msg.seq_num;
                 }
-                println!("&&&&&&&&&&&&&&&&&&&&&&&&&");
-                println!("-------get from [{}]: src:{}", peer_id, msg.source);
-                println!("&&&&&&&&&&&&&&&&&&&&&&&&&");
-                /*
-                 *  Connect
-                 */
-
-                //self.broadcast_bootstrap(my_info_message);
-                self.broadcast_bootstrap(msg.clone());
 
                 let my_info = unwrap_result!(self.my_info.lock());
                 let my_info_message = Message{
                     source: self.get_id(),
                     message: my_info.clone(),
-                    kind: MsgKind::Bootstrap,
+                    kind: MsgKind::BootstrapResponse,
                     seq_num: self.next_seq_num(),
                 };
-                let their_conn: TheirConnectionInfo = json::decode(&msg.message).unwrap();
+
                 self.broadcast_bootstrap(my_info_message);
-                //self.broadcast_bootstrap(msg.clone());
+            }
+
+            MsgKind::Bootstrap => {
+                let their_conn: TheirConnectionInfo = json::decode(&msg.message).unwrap();
                 println!("####### Trying to connect [{}] #######", msg.source);
                 let nodes = self.connected_peers();
                 let lock_nodes = unwrap_result!(nodes.lock());
@@ -334,13 +368,6 @@ impl MessagePasser {
                 } else {
                     println!("Already connected");
                 }
-                /*
-                if !self.peers().contains(&msg.source) {
-                    println!("!!!!!!! Connect !!!!!!!");
-                    self.connect(0, their_conn);
-                } else {
-                    println!("Already connected");
-                }*/
             }
         }
     }
@@ -393,11 +420,12 @@ impl MessagePasser {
                     self.print_connected_nodes(&service);
                 }
 
+
                 let my_info = unwrap_result!(self.my_info.lock());
                 let my_info_message = Message{
                     source: self.get_id(),
                     message: my_info.clone(),
-                    kind: MsgKind::Bootstrap,
+                    kind: MsgKind::BootstrapRequest,
                     seq_num: self.next_seq_num(),
                 };
                 self.send_msg(peer_id, my_info_message);
