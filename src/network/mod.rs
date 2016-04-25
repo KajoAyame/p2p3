@@ -205,7 +205,7 @@ impl MessagePasser {
                 let service = unwrap_result!(self.service.lock());
                 service.connect(our_info, their_info);
                 println!("connect!!");
-                self.prepare_connection_info();
+                //self.prepare_connection_info();
             },
             Entry::Vacant(_) => {
                 println!("No connection info prepared!");
@@ -498,6 +498,7 @@ impl MessagePasser {
                     let service = unwrap_result!(self.service.lock());
                     self.print_connected_nodes(&service);
                 }
+                self.prepare_connection_info();
                 // Tell the new peer all the nodes it knows.
                 /*
                 let their_infos = unwrap_result!(self.their_infos.lock());
