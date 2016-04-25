@@ -189,13 +189,6 @@ impl MessagePasser {
     }
 
     pub fn connect(&self, i:u32, their_info:TheirConnectionInfo){
-        {
-            let tok = self.prepare_connection_info();
-            println!("Wait");
-            //let conn_token = unwrap_result!(self.conn_token.lock());
-            self.wait_conn_info(tok);
-            println!("Wait Finish");
-        }
         let mut infos = unwrap_result!(self.conn_infos.lock());
         println!("<<< After: len =  {} >>>", infos.len());
         if infos.len() == 0 {
