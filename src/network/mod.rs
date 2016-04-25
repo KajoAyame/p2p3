@@ -196,28 +196,6 @@ impl MessagePasser {
         //println!("Wait Finish");
         let mut infos = unwrap_result!(self.conn_infos.lock());
         println!("<<< After: len =  {} >>>", infos.len());
-        println!("Prepare");
-        self.prepare_connection_info();
-        println!("Wait");
-        let conn_token = unwrap_result!(self.conn_token.lock());
-        self.wait_conn_info(*conn_token - 1);
-        println!("Wait Finish");
-
-        match infos.entry(*conn_token - 1){
-            Entry::Occupied(oe)=>{
-                let our_info = oe.remove();
-                //let our_info = oe.get();
-                let service = unwrap_result!(self.service.lock());
-                service.connect(our_info, their_info);
-                println!("connect!!");
-                //self.prepare_connection_info();
-            },
-            Entry::Vacant(_) => {
-                println!("No connection info prepared!");
-            }
-        }
-
-        /*
         if infos.len() == 0 {
             println!("Prepare");
             //self.prepare_connection_info();
@@ -250,7 +228,7 @@ impl MessagePasser {
                     println!("No connection info prepared!");
                 }
             }
-        }*/
+        }
     }
 
     pub fn get_service(&self) -> Arc<Mutex<Service>>{
