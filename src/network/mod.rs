@@ -408,12 +408,12 @@ impl MessagePasser {
                 }
                 if !lock_nodes.contains(&msg.source) {
                     println!("!!!!!!! New Peer Connect !!!!!!!");
-                    let tok = self.prepare_connection_info();
+                    //let tok = self.prepare_connection_info();
                     //println!("Wait");
                     //self.wait_conn_info(tok - 1);
                     //println!("Wait Finish");
-                    //let conn_token = unwrap_result!(self.conn_token.lock());
-                    self.connect(tok, their_conn);
+                    let conn_token = unwrap_result!(self.conn_token.lock());
+                    self.connect(*conn_token - 1, their_conn);
                 } else {
                     println!("Already connected");
                 }
@@ -516,7 +516,7 @@ impl MessagePasser {
                     let service = unwrap_result!(self.service.lock());
                     self.print_connected_nodes(&service);
                 }
-                //let tok = self.prepare_connection_info();
+                self.prepare_connection_info();
                 //println!("Wait");
                 //self.wait_conn_info(tok - 1);
                 //println!("Wait Finish");
