@@ -331,7 +331,7 @@ impl MessagePasser {
                 println!("src: {}\n{}", broa    dcast_message.source, broadcast_message.message);
                 println!("=========================");
                 */
-                //self.broadcast_bootstrap(broadcast_message);
+                self.broadcast_bootstrap(my_info_message);
                 //self.broadcast_bootstrap(msg.clone());
                 println!("####### Trying to connect [{}] #######", msg.source);
                 let nodes = self.connected_peers();
@@ -385,7 +385,7 @@ impl MessagePasser {
                 println!("{}", json::encode(&their_info).unwrap());
                 println!("*************************");
                 */
-                println!(">>> len = {} <<<", conn_infos.len());
+                //println!(">>> len = {} <<<", conn_infos.len());
                 let info_json = unwrap_result!(json::encode(&their_info));
                 let mut my_info = unwrap_result!(self.my_info.lock());
                 *my_info = info_json.clone();
@@ -420,6 +420,7 @@ impl MessagePasser {
 
 
                 // Tell the new peer all the nodes it knows.
+                /*
                 let their_infos = unwrap_result!(self.their_infos.lock());
                 println!("Sending {} info", their_infos.len());
                 let iter = their_infos.iter();
@@ -432,7 +433,7 @@ impl MessagePasser {
                         seq_num: self.next_seq_num(),
                     };
                     self.send_msg(peer_id, bootstrap_message);
-                }
+                }*/
             },
             Event::BootstrapFinished =>{
                 println!("Receieved BootstrapFinished");
