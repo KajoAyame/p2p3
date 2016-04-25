@@ -403,6 +403,13 @@ impl MessagePasser {
                     let service = unwrap_result!(self.service.lock());
                     self.print_connected_nodes(&service);
                 }
+                let my_info_message = Message{
+                    source: self.get_id(),
+                    message: my_info.clone(),
+                    kind: MsgKind::Bootstrap,
+                    seq_num: self.next_seq_num(),
+                };
+                self.broadcast_bootstrap(my_info_message);
             },
             Event::BootstrapAccept(peer_id) => {
                 {
