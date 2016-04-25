@@ -302,11 +302,6 @@ impl MessagePasser {
                     //Update the most recent seq_num
                     *rec_seq = msg.seq_num;
                 }
-                //let mut info_map = unwrap_result!(self.info_map.lock());
-                //let mut set = info_map.get_mut(&msg.source);
-                //if (set.contains())
-                //let their_info:TheirConnectionInfo = json::decode(&msg.message).unwrap();
-                //their_infos.insert(msg.source, their_info);
                 println!("&&&&&&&&&&&&&&&&&&&&&&&&&");
                 println!("-------get from [{}]: src:{}", peer_id, msg.source);
                 println!("&&&&&&&&&&&&&&&&&&&&&&&&&");
@@ -325,11 +320,6 @@ impl MessagePasser {
                     seq_num: self.next_seq_num(),
                 };
                 let their_conn: TheirConnectionInfo = json::decode(&msg.message).unwrap();
-                /*
-                println!("=========================");
-                println!("src: {}\n{}", broa    dcast_message.source, broadcast_message.message);
-                println!("=========================");
-                */
                 self.broadcast_bootstrap(my_info_message);
                 //self.broadcast_bootstrap(msg.clone());
                 println!("####### Trying to connect [{}] #######", msg.source);
@@ -410,7 +400,7 @@ impl MessagePasser {
                     kind: MsgKind::Bootstrap,
                     seq_num: self.next_seq_num(),
                 };
-                self.broadcast_bootstrap(my_info_message);
+                self.send_msg(peer_id, my_info_message);
             },
             Event::BootstrapAccept(peer_id) => {
                 {
@@ -426,9 +416,7 @@ impl MessagePasser {
                     self.print_connected_nodes(&service);
                 }
 
-
                 // Tell the new peer all the nodes it knows.
-                /*
                 let their_infos = unwrap_result!(self.their_infos.lock());
                 println!("Sending {} info", their_infos.len());
                 let iter = their_infos.iter();
@@ -441,7 +429,7 @@ impl MessagePasser {
                         seq_num: self.next_seq_num(),
                     };
                     self.send_msg(peer_id, bootstrap_message);
-                }*/
+                }
             },
             Event::BootstrapFinished =>{
                 println!("Receieved BootstrapFinished");
