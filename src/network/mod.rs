@@ -278,7 +278,7 @@ impl MessagePasser {
                 }
             }
             MsgKind::BootstrapRequest => {
-                println!("1111111 BootstrapRequest 1111111");
+                println!("1111111 BootstrapRequest 1111111 from [{}]", peer_id);
                 let peer_message = Message{
                     source: msg.source,
                     message: msg.message,
@@ -288,7 +288,7 @@ impl MessagePasser {
                 self.broadcast_bootstrap(peer_message);
             }
             MsgKind::BootstrapResponse => {
-                println!("3333333 BootstrapResponse 3333333");
+                println!("3333333 BootstrapResponse 3333333 from [{}]", peer_id);
                 if msg.source == self.my_id {
                     println!("received self");
                     return;
@@ -322,7 +322,7 @@ impl MessagePasser {
                 }
             }
             MsgKind::BootstrapNewPeer => {
-                println!("2222222 BootstrapNewPeer 2222222");
+                println!("2222222 BootstrapNewPeer 2222222 from [{}]", peer_id);
                 /*
                 if msg.source == self.my_id {
                     println!("received self");
