@@ -59,9 +59,18 @@ pub trait MessagePasserT{
             message: msg,
             kind: MsgKind::Broadcast,
             seq_num: self.next_seq_num()};
+
+        let nodes = self.connected_peers();
+        let lock_nodes = unwrap_result!(nodes.lock());
+        let iter = lock_nodes.iter();
+        for peer in iter {
+            println!("send to peer {}", peer);
+            unwrap_result!(self.send_msg(*peer, msg.clone()));
+        }
+        /*
         for peer in self.peers(){
             unwrap_result!(self.send_msg(peer, msg.clone()));
-        }
+        }*/
         Ok(())
     }
 
@@ -518,7 +527,12 @@ impl MessagePasser {
                 //println!("Wait Finish");
             },
             Event::LostPeer(peer_id) => {
-                unwrap_result!(self.nodes.lock()).remove(&peer_id);
+                let nodes = unwrap_result!(self.nodes.lock());
+                for x in 0..nodex.len() {
+                    if nodes.get(x) == peer_id {
+                        nodes.remove(x);
+                    }
+                }
                 unwrap_result!(self.peer_seqs.lock()).remove(&peer_id);
                 println!("peer disconnected {}", peer_id);
             },
