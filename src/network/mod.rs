@@ -323,13 +323,14 @@ impl MessagePasser {
                 }
                 if !lock_nodes.contains(&msg.source) {
                     println!("!!!!!!! Connect !!!!!!!");
-                    self.connect(0, their_conn);
+                    let conn_token = unwrap_result!(self.conn_token.lock());
+                    self.connect(*conn_token, their_conn);
                 } else {
                     println!("Already connected");
                 }
             }
             MsgKind::BootstrapNewPeer => {
-                println!("2222222 BootstrapNewPeer 2222222 from [{}]", peer_id);
+                println!("2222222 BootstrapNewPeer 2222222 from [{}]: NewPeer: {}", peer_id, msg.source);
 
                 if msg.source == self.my_id {
                     println!("received self");
@@ -372,7 +373,8 @@ impl MessagePasser {
                 }
                 if !lock_nodes.contains(&msg.source) {
                     println!("!!!!!!! Connect !!!!!!!");
-                    self.connect(0, their_conn);
+                    let conn_token = unwrap_result!(self.conn_token.lock());
+                    self.connect(*conn_token, their_conn);
                 } else {
                     println!("Already connected");
                 }
@@ -388,7 +390,8 @@ impl MessagePasser {
                 }
                 if !lock_nodes.contains(&msg.source) {
                     println!("!!!!!!! Connect !!!!!!!");
-                    self.connect(0, their_conn);
+                    let conn_token = unwrap_result!(self.conn_token.lock());
+                    self.connect(*conn_token, their_conn);
                 } else {
                     println!("Already connected");
                 }
@@ -417,15 +420,8 @@ impl MessagePasser {
 
                 let mut conn_infos = unwrap_result!(self.conn_infos.lock());
                 conn_infos.insert(result_token, info);
-                /*
-                 *  New things.
-                 */
-                /*
-                println!("*************************");
-                println!("{}", json::encode(&their_info).unwrap());
-                println!("*************************");
-                */
-                //println!(">>> len = {} <<<", conn_infos.len());
+
+                // My info.
                 let info_json = unwrap_result!(json::encode(&their_info));
                 let mut my_info = unwrap_result!(self.my_info.lock());
                 *my_info = info_json.clone();
@@ -499,22 +495,6 @@ impl MessagePasser {
                     self.print_connected_nodes(&service);
                 }
                 self.prepare_connection_info();
-                // Tell the new peer all the nodes it knows.
-                /*
-                let their_infos = unwrap_result!(self.their_infos.lock());
-                println!("Sending {} info", their_infos.len());
-                let iter = their_infos.iter();
-
-                for (id, info) in iter {
-                    let info_str = json::encode(&info).unwrap();
-                    let bootstrap_message = Message{
-                        source: *id,
-                        message: info_str,
-                        kind: MsgKind::Bootstrap,
-                        seq_num: 0,
-                    };
-                    self.send_msg(peer_id, bootstrap_message);
-                }*/
             },
             Event::LostPeer(peer_id) => {
                 unwrap_result!(self.peer_seqs.lock()).remove(&peer_id);
