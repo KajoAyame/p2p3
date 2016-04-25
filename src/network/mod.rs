@@ -407,7 +407,7 @@ impl MessagePasser {
                     print!("{}\t", id);
                 }
                 if !lock_nodes.contains(&msg.source) {
-                    self.prepare_connection_info();
+                    //self.prepare_connection_info();
                     println!("!!!!!!! New Peer Connect !!!!!!!");
                     //let tok = self.prepare_connection_info();
                     //println!("Wait");
@@ -517,6 +517,7 @@ impl MessagePasser {
                     let service = unwrap_result!(self.service.lock());
                     self.print_connected_nodes(&service);
                 }
+                self.prepare_connection_info();
                 self.prepare_connection_info();
                 //println!("Wait");
                 //self.wait_conn_info(tok - 1);
